@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IntelliJ IDEA / JetBrains
+.idea/workspace.xml
+.idea/shelf/
+.idea/httpRequests/
+.idea/queries/
+.idea/dataSources/
+.idea/dataSources.local.xml
+*.iws
+*.ipr
+out/
+
+# Java / build
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Env / secrets
+.env
+*.local
+
+# Logs
+*.log
