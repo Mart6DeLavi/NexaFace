@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: nextface-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/nextface}
+    username: ${DB_USERNAME:nextface}
+    password: ${DB_PASSWORD:nextface}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  servlet:
+    multipart:
+      # Face enrollment images are uploaded through the backend.
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+server:
+  port: ${SERVER_PORT:8080}
+
+nextface:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+
+logging:
+  level:
+    com.nextface: INFO

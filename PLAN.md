@@ -990,15 +990,19 @@ Do not mark [x] if:
 
 ## Phase 1 — Project Setup
 
-- [ ] Create the project structure.
+- [~] Create the project structure. <sub>backend + root files done; frontend, face-service, sdk, demo-client pending</sub>
 - [ ] Initialize Next.js.
-- [ ] Initialize Spring Boot.
+- [x] Initialize Spring Boot.
 - [ ] Initialize FastAPI.
-- [ ] Configure PostgreSQL.
-- [ ] Configure the environment configuration.
-- [ ] Configure CORS.
-- [ ] Verify that all components start.
-- [ ] Create a basic README.
+- [x] Configure PostgreSQL.
+- [x] Configure the environment configuration.
+- [x] Configure CORS.
+- [~] Verify that all components start. <sub>backend verified; other components not created yet</sub>
+- [x] Create a basic README.
+
+> Implementation note (2026-11-12): the backend is a Gradle project (`backend/`, Spring Boot 3.5.16,
+> Java 21, Gradle wrapper 8.13). It starts on port 8080, connects to PostgreSQL, exposes
+> `GET /api/health` and allows the origin configured in `CORS_ALLOWED_ORIGINS`. Tests: `./gradlew test`.
 
 **Definition of Done:** all applications start and can interact.
 
@@ -1253,17 +1257,17 @@ The project is considered complete when:
 
 The AI Developer must keep this section up to date.
 
-**Current Phase:** Not Started
+**Current Phase:** Phase 1 — Project Setup
 
-**Last Completed Task:** None
+**Last Completed Task:** Phase 1: Spring Boot backend initialization (Gradle), PostgreSQL connection, environment configuration, CORS, basic README
 
 **Current Task:** None
 
-**Known Issues:** None
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Next.js, FastAPI, SDK and demo-client are not created yet.
 
-**Next Recommended Action:** Phase 1 — Project Setup
+**Next Recommended Action:** Phase 1 — Initialize Next.js frontend
 
-**Last Updated:** Not Started
+**Last Updated:** 2026-11-12
 
 Update this section after every work session.
 
