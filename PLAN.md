@@ -1,63 +1,63 @@
 
 # NextFace — Project Plan & Technical Specification
 
-> Главный документ проекта. Содержит описание архитектуры, технологий, взаимодействия компонентов, бизнес-логики и последовательности разработки.
+> The main project document. It describes the architecture, technologies, component interaction, business logic, and development sequence.
 >
-> AI-разработчик должен использовать этот документ как основной источник требований и постепенно обновлять статусы выполнения задач.
+> The AI developer must use this document as the primary source of requirements and gradually update the task completion statuses.
 
 ---
 
 # 1. Project Overview
 
-## 1.1. Описание проекта
+## 1.1. Project Description
 
-NextFace — учебный прототип централизованной системы биометрической аутентификации пользователей с использованием распознавания лица.
+NextFace is an educational prototype of a centralized user biometric authentication system using face recognition.
 
-Основная идея заключается в том, чтобы предоставить сторонним веб-сайтам возможность использовать NextFace для авторизации своих пользователей.
+The main idea is to give third-party websites the ability to use NextFace to authenticate their users.
 
-Вместо реализации собственной системы регистрации и входа сторонний разработчик интегрирует NextFace в свой сайт с помощью небольшого JavaScript SDK.
+Instead of implementing their own registration and login system, a third-party developer integrates NextFace into their website using a small JavaScript SDK.
 
-Пользователь перенаправляется на официальный сайт NextFace, проходит аутентификацию по лицу, после чего возвращается на сайт, с которого начал авторизацию.
+The user is redirected to the official NextFace website, authenticates by face, and then returns to the website from which authorization was started.
 
-Все пользовательские данные, пароли и биометрические шаблоны хранятся и обрабатываются на стороне NextFace.
+All user data, passwords, and biometric templates are stored and processed on the NextFace side.
 
-Сторонние сайты не должны самостоятельно:
-- Регистрировать пользователей в NextFace.
-- Хранить пароли пользователей NextFace.
-- Получать фотографии лиц.
-- Получать биометрические embeddings.
-- Выполнять распознавание лиц.
-- Обрабатывать биометрические данные.
+Third-party websites must not independently:
+- Register users in NextFace.
+- Store passwords of NextFace users.
+- Obtain face photographs.
+- Obtain biometric embeddings.
+- Perform face recognition.
+- Process biometric data.
 
-## 1.2. Основные цели
+## 1.2. Main Goals
 
-- Создать централизованную систему пользовательской аутентификации.
-- Реализовать регистрацию пользователей через email и пароль.
-- Реализовать регистрацию биометрического профиля.
-- Реализовать авторизацию посредством распознавания лица.
-- Реализовать базовую проверку Liveness.
-- Предоставить пользователям Dashboard.
-- Предоставить разработчикам Developer Portal.
-- Создать простой JavaScript SDK.
-- Продемонстрировать интеграцию NextFace со сторонним веб-сайтом.
+- Create a centralized user authentication system.
+- Implement user registration via email and password.
+- Implement biometric profile enrollment.
+- Implement authorization via face recognition.
+- Implement basic Liveness detection.
+- Provide users with a Dashboard.
+- Provide developers with a Developer Portal.
+- Create a simple JavaScript SDK.
+- Demonstrate NextFace integration with a third-party website.
 
-## 1.3. Ограничения проекта
+## 1.3. Project Constraints
 
-Проект является учебным прототипом, а не коммерческой системой биометрической безопасности.
+The project is an educational prototype, not a commercial biometric security system.
 
-Не реализовывать:
+Do not implement:
 - Kubernetes.
 - Jenkins.
 - CI/CD.
 - Nginx.
 - Redis.
-- Микросервисы для каждой отдельной функции.
-- Мобильные приложения.
-- Собственную нейросеть для распознавания лиц.
-- Полноценную коммерческую инфраструктуру.
-- Сложную систему мониторинга.
+- Microservices for each individual function.
+- Mobile applications.
+- A proprietary neural network for face recognition.
+- Full-fledged commercial infrastructure.
+- A complex monitoring system.
 
-Не усложнять архитектуру без необходимости.
+Do not complicate the architecture without necessity.
 
 ---
 
@@ -70,17 +70,17 @@ NextFace — учебный прототип централизованной с
 - TypeScript
 - Tailwind CSS
 - shadcn/ui
-- MediaDevices API для доступа к камере браузера.
+- MediaDevices API for browser camera access.
 
-Ответственность:
-- Отображение пользовательского интерфейса.
-- Регистрация и вход.
-- Работа с камерой.
-- Отображение процесса распознавания лица.
+Responsibilities:
+- Displaying the user interface.
+- Registration and login.
+- Working with the camera.
+- Displaying the face recognition process.
 - Dashboard.
 - Developer Portal.
-- Управление пользовательскими настройками.
-- Интеграция JavaScript SDK.
+- Managing user settings.
+- JavaScript SDK integration.
 
 ## 2.2. Backend
 
@@ -94,17 +94,17 @@ NextFace — учебный прототип централизованной с
 - BCrypt
 - PostgreSQL Driver
 
-Ответственность:
-- Регистрация пользователей.
-- Авторизация пользователей.
-- Генерация и проверка JWT.
-- Управление пользовательскими профилями.
-- Управление биометрическими профилями.
-- Управление сторонними приложениями.
-- Обработка запросов на интеграцию.
-- Создание и проверка одноразовых authorization codes.
-- Взаимодействие с Face Service.
-- Работа с PostgreSQL.
+Responsibilities:
+- User registration.
+- User authorization.
+- JWT generation and validation.
+- User profile management.
+- Biometric profile management.
+- Third-party application management.
+- Processing integration requests.
+- Creating and validating one-time authorization codes.
+- Interaction with the Face Service.
+- Working with PostgreSQL.
 
 ## 2.3. Face Recognition Service
 
@@ -116,54 +116,54 @@ NextFace — учебный прототип централизованной с
 - NumPy
 - Pydantic
 
-Ответственность:
-- Получение изображений лица.
-- Обнаружение лица.
-- Проверка качества изображения.
-- Получение facial landmarks.
-- Генерация face embeddings.
-- Сравнение embeddings.
-- Базовая проверка Liveness.
+Responsibilities:
+- Receiving face images.
+- Face detection.
+- Image quality checks.
+- Obtaining facial landmarks.
+- Generating face embeddings.
+- Comparing embeddings.
+- Basic Liveness detection.
 
-ВАЖНО:
+IMPORTANT:
 
-MediaPipe используется для обнаружения лица и определения ключевых точек, но сам по себе не выполняет идентификацию личности.
+MediaPipe is used for face detection and landmark identification, but it does not perform identity identification by itself.
 
-Для идентификации необходимо использовать отдельную модель, которая генерирует face embeddings.
+Identification requires a separate model that generates face embeddings.
 
-Не считать обычную RGB-камеру настоящим 3D-сканером. Проект использует оценку геометрии лица по обычному изображению.
+Do not treat an ordinary RGB camera as a real 3D scanner. The project uses face geometry estimation from a regular image.
 
 ## 2.4. Database
 
-PostgreSQL — единственная основная база данных проекта.
+PostgreSQL is the only primary database of the project.
 
-Используется для хранения:
-- Пользователей.
-- Паролей в виде хэшей.
-- Биометрических шаблонов.
-- Сторонних приложений.
+It is used to store:
+- Users.
+- Passwords as hashes.
+- Biometric templates.
+- Third-party applications.
 - Authorization codes.
-- Истории авторизаций.
+- Authorization history.
 
-Redis не использовать.
+Do not use Redis.
 
-## 2.5. Общие принципы
+## 2.5. General Principles
 
-- REST API для коммуникации компонентов.
-- JSON для передачи данных.
-- JWT для пользовательских сессий NextFace.
-- HTTPS обязателен при реальном размещении.
-- Все секреты хранить в переменных окружения.
-- Не хранить пароли в открытом виде.
-- Не передавать embeddings сторонним сайтам.
-- Не помещать Client Secret во frontend.
-- Не хранить биометрические данные в localStorage.
+- REST API for component communication.
+- JSON for data transfer.
+- JWT for NextFace user sessions.
+- HTTPS is mandatory in real deployment.
+- Store all secrets in environment variables.
+- Do not store passwords in plaintext.
+- Do not transfer embeddings to third-party websites.
+- Do not place the Client Secret in the frontend.
+- Do not store biometric data in localStorage.
 
 ---
 
 # 3. System Architecture
 
-## 3.1. Общая структура
+## 3.1. Overall Structure
 
 ```text
 NextFace/
@@ -217,13 +217,13 @@ NextFace/
 └── README.md
 ```
 
-## 3.2. Компоненты системы
+## 3.2. System Components
 
 ### Frontend
 
-Единое веб-приложение NextFace.
+A single NextFace web application.
 
-Содержит:
+Contains:
 - Landing Page.
 - Registration.
 - Login.
@@ -235,9 +235,9 @@ NextFace/
 
 ### Backend
 
-Одно Spring Boot приложение с модульной архитектурой.
+A single Spring Boot application with a modular architecture.
 
-Модули:
+Modules:
 
 1. Auth Module.
 2. User Module.
@@ -246,25 +246,25 @@ NextFace/
 5. Integration Module.
 6. Audit Module.
 
-Не разделять эти модули на отдельные Spring Boot приложения.
+Do not split these modules into separate Spring Boot applications.
 
 ### Face Service
 
-Одно Python-приложение FastAPI.
+A single Python FastAPI application.
 
-Внутри него находятся:
+It contains:
 - Face Detection.
 - Face Embedding Generation.
 - Face Matching.
 - Liveness Detection.
 
-Не создавать отдельные Python-сервисы для каждой функции.
+Do not create separate Python services for each function.
 
 ### Database
 
-Одна PostgreSQL база данных для всех компонентов NextFace.
+A single PostgreSQL database for all NextFace components.
 
-Face Service не должен напрямую подключаться к PostgreSQL. Все операции сохранения и получения пользовательских биометрических шаблонов выполняются через Spring Boot Backend.
+The Face Service must not connect directly to PostgreSQL. All operations of saving and retrieving user biometric templates are performed through the Spring Boot Backend.
 
 ---
 
@@ -272,9 +272,9 @@ Face Service не должен напрямую подключаться к Post
 
 ## 4.1. Frontend → Backend
 
-Frontend взаимодействует с Backend через REST API.
+The Frontend interacts with the Backend via REST API.
 
-Пример:
+Example:
 
 ```text
 Frontend
@@ -289,13 +289,13 @@ Spring Boot Backend
 PostgreSQL
 ```
 
-Frontend не должен напрямую обращаться к PostgreSQL.
+The Frontend must not access PostgreSQL directly.
 
 ## 4.2. Backend → Face Service
 
-Backend взаимодействует с Python Face Service через HTTP REST API.
+The Backend interacts with the Python Face Service via HTTP REST API.
 
-Пример:
+Example:
 
 ```text
 Spring Boot
@@ -316,15 +316,15 @@ Embedding
 Spring Boot
 ```
 
-Face Service возвращает результаты анализа, но не управляет пользователями и не выдаёт JWT.
+The Face Service returns analysis results but does not manage users and does not issue JWTs.
 
 ## 4.3. Backend → PostgreSQL
 
-Spring Boot использует Spring Data JPA для работы с базой данных.
+Spring Boot uses Spring Data JPA to work with the database.
 
-Все операции с пользователями, приложениями, биометрическими профилями и authorization codes выполняются через Backend.
+All operations with users, applications, biometric profiles, and authorization codes are performed through the Backend.
 
-## 4.4. Общая схема
+## 4.4. Overall Diagram
 
 ```text
                   USER
@@ -348,13 +348,13 @@ Spring Boot использует Spring Data JPA для работы с базо
 
 # 5. Database Design
 
-Создать следующие таблицы.
+Create the following tables.
 
 ## 5.1. users
 
-Хранит пользовательские аккаунты.
+Stores user accounts.
 
-Поля:
+Fields:
 
 - id: UUID, Primary Key.
 - email: VARCHAR, Unique, Not Null.
@@ -365,9 +365,9 @@ Spring Boot использует Spring Data JPA для работы с базо
 
 ## 5.2. face_profiles
 
-Хранит биометрические шаблоны.
+Stores biometric templates.
 
-Поля:
+Fields:
 
 - id: UUID, Primary Key.
 - user_id: UUID, Foreign Key, Unique.
@@ -376,15 +376,15 @@ Spring Boot использует Spring Data JPA для работы с базо
 - created_at: TIMESTAMP.
 - updated_at: TIMESTAMP.
 
-Не сохранять фотографии лица без необходимости.
+Do not store face photographs unless necessary.
 
-Embedding является чувствительными биометрическими данными. Ограничить доступ и защитить данные при хранении.
+The embedding is sensitive biometric data. Restrict access and protect the data at rest.
 
 ## 5.3. applications
 
-Хранит сторонние приложения, использующие NextFace.
+Stores third-party applications that use NextFace.
 
-Поля:
+Fields:
 
 - id: UUID, Primary Key.
 - owner_id: UUID, Foreign Key.
@@ -395,15 +395,15 @@ Embedding является чувствительными биометричес
 - created_at: TIMESTAMP.
 - enabled: BOOLEAN.
 
-Client Secret генерируется при создании приложения.
+The Client Secret is generated when the application is created.
 
-Показывать его владельцу только при создании или при явном перевыпуске.
+Show it to the owner only at creation time or upon an explicit reissue.
 
 ## 5.4. authorization_codes
 
-Хранит временные коды авторизации.
+Stores temporary authorization codes.
 
-Поля:
+Fields:
 
 - id: UUID, Primary Key.
 - user_id: UUID, Foreign Key.
@@ -413,18 +413,18 @@ Client Secret генерируется при создании приложен�
 - used: BOOLEAN.
 - created_at: TIMESTAMP.
 
-Коды:
-- Одноразовые.
-- Имеют короткий срок действия.
-- Хранятся в виде хэша.
-- Привязаны к конкретному приложению.
-- Не могут использоваться повторно.
+Codes:
+- Are one-time.
+- Have a short lifetime.
+- Are stored as a hash.
+- Are bound to a specific application.
+- Cannot be reused.
 
 ## 5.5. audit_logs
 
-Хранит историю событий.
+Stores the event history.
 
-Поля:
+Fields:
 
 - id: UUID, Primary Key.
 - user_id: UUID, Foreign Key, Nullable.
@@ -433,7 +433,7 @@ Client Secret генерируется при создании приложен�
 - success: BOOLEAN.
 - created_at: TIMESTAMP.
 
-Не записывать в логи пароли, JWT, Client Secret, изображения лица или embeddings.
+Do not log passwords, JWTs, Client Secrets, face images, or embeddings.
 
 ---
 
@@ -441,45 +441,45 @@ Client Secret генерируется при создании приложен�
 
 ## 6.1. Registration
 
-Пользователь регистрируется через email и пароль.
+The user registers via email and password.
 
-Последовательность:
+Sequence:
 
-1. Пользователь открывает Registration Page.
-2. Вводит email и пароль.
-3. Frontend отправляет POST /api/auth/register.
-4. Backend проверяет корректность данных.
-5. Backend проверяет уникальность email.
-6. Пароль хэшируется через BCrypt.
-7. Создаётся пользователь в PostgreSQL.
-8. Backend возвращает результат регистрации.
-9. Пользователь переходит к регистрации лица.
+1. The user opens the Registration Page.
+2. Enters email and password.
+3. The Frontend sends POST /api/auth/register.
+4. The Backend validates the data.
+5. The Backend checks email uniqueness.
+6. The password is hashed with BCrypt.
+7. A user is created in PostgreSQL.
+8. The Backend returns the registration result.
+9. The user proceeds to face enrollment.
 
-После успешной регистрации можно выдать JWT либо предложить пользователю выполнить вход.
+After successful registration, either issue a JWT or prompt the user to log in.
 
 ## 6.2. Password Login
 
-1. Пользователь вводит email и пароль.
-2. Frontend отправляет POST /api/auth/login.
-3. Backend получает пользователя из PostgreSQL.
-4. Backend проверяет пароль через BCrypt.
-5. При успешной проверке генерирует JWT.
-6. Frontend получает токен и создаёт пользовательскую сессию.
+1. The user enters email and password.
+2. The Frontend sends POST /api/auth/login.
+3. The Backend retrieves the user from PostgreSQL.
+4. The Backend verifies the password via BCrypt.
+5. On successful verification, it generates a JWT.
+6. The Frontend receives the token and creates a user session.
 
 ## 6.3. JWT
 
-Использовать JWT для авторизации запросов к NextFace Backend.
+Use JWT to authorize requests to the NextFace Backend.
 
-Требования:
+Requirements:
 
-- Подписывать токены безопасным ключом.
-- Указывать expiration.
-- Проверять подпись и срок действия.
-- Не помещать секретную информацию в payload.
-- Защищать API через Spring Security.
-- Использовать короткоживущий access token.
+- Sign tokens with a secure key.
+- Specify an expiration.
+- Verify the signature and expiration.
+- Do not put sensitive information in the payload.
+- Protect the API via Spring Security.
+- Use a short-lived access token.
 
-Для учебного прототипа можно реализовать refresh token отдельно, если он действительно понадобится.
+For the educational prototype, a refresh token may be implemented separately if it is actually needed.
 
 ---
 
@@ -487,67 +487,67 @@ Client Secret генерируется при создании приложен�
 
 ## 7.1. Face Detection
 
-Использовать MediaPipe для:
-- Обнаружения лица.
-- Определения ключевых точек.
-- Проверки положения лица в кадре.
-- Проверки того, что в кадре находится одно лицо.
+Use MediaPipe for:
+- Face detection.
+- Landmark identification.
+- Checking the face position in the frame.
+- Verifying that there is exactly one face in the frame.
 
-Если лицо не найдено, вернуть понятную ошибку.
+If no face is found, return a clear error.
 
 ## 7.2. Face Embedding
 
-Использовать отдельную модель распознавания лиц, совместимую с ONNX Runtime.
+Use a separate face recognition model compatible with ONNX Runtime.
 
-Алгоритм:
+Algorithm:
 
-1. Получить изображение.
-2. Найти лицо.
-3. Выполнить выравнивание лица.
-4. Подготовить изображение для модели.
-5. Получить embedding.
-6. Нормализовать embedding.
-7. Вернуть embedding Backend.
+1. Receive the image.
+2. Find the face.
+3. Perform face alignment.
+4. Prepare the image for the model.
+5. Obtain the embedding.
+6. Normalize the embedding.
+7. Return the embedding to the Backend.
 
-Использовать одну и ту же модель и одинаковую предобработку при регистрации и авторизации.
+Use the same model and the same preprocessing for enrollment and authorization.
 
-Зафиксировать версию модели.
+Pin the model version.
 
 ## 7.3. Face Matching
 
-Для сравнения использовать cosine similarity или другой метод, предусмотренный выбранной моделью.
+Use cosine similarity or another method provided by the chosen model for comparison.
 
-Результат сравнения должен содержать:
+The comparison result must contain:
 
 - similarity score.
 - match result.
 - model version.
 
-Порог совпадения вынести в конфигурацию.
+Keep the match threshold in configuration.
 
-Не выбирать порог произвольно и не считать его универсальным: проверить на тестовых примерах.
+Do not choose the threshold arbitrarily and do not assume it is universal: validate it on test samples.
 
 ## 7.4. Liveness Detection
 
-Реализовать простую демонстрационную проверку живого присутствия.
+Implement a simple demonstration liveness check.
 
-Возможные действия:
+Possible actions:
 
-- Повернуть голову влево.
-- Повернуть голову вправо.
-- Моргнуть.
+- Turn the head left.
+- Turn the head right.
+- Blink.
 
-Использовать MediaPipe landmarks для анализа движения.
+Use MediaPipe landmarks to analyze movement.
 
-ВАЖНО:
+IMPORTANT:
 
-Это базовая демонстрация Liveness, а не полноценная защита от профессиональных атак с фотографиями, видео или deepfake.
+This is a basic Liveness demonstration, not full protection against professional attacks using photographs, videos, or deepfakes.
 
 ---
 
 # 8. Face Enrollment Flow
 
-Регистрация биометрического профиля.
+Biometric profile enrollment.
 
 ```text
 USER
@@ -589,15 +589,15 @@ Save Embedding in PostgreSQL
 Enrollment Successful
 ```
 
-Правила:
+Rules:
 
-- Требовать авторизованную пользовательскую сессию.
-- Разрешать регистрацию только одного лица.
-- Не принимать кадры без лица.
-- Не принимать несколько лиц.
-- Проверять качество изображения.
-- Не перезаписывать существующий embedding без явного подтверждения.
-- При повторной регистрации корректно обновлять биометрический профиль.
+- Require an authenticated user session.
+- Allow enrollment of only one face.
+- Do not accept frames without a face.
+- Do not accept multiple faces.
+- Check image quality.
+- Do not overwrite an existing embedding without explicit confirmation.
+- On re-enrollment, update the biometric profile correctly.
 
 ---
 
@@ -644,51 +644,51 @@ Compare Embeddings
    Authentication Successful
 ```
 
-Правила:
+Rules:
 
-- Пользователь должен существовать.
-- У пользователя должен быть зарегистрирован Face Profile.
-- При отсутствии лица возвращать ошибку.
-- При низком качестве изображения предлагать повторить сканирование.
-- При несовпадении не выдавать JWT.
-- Ограничить количество попыток.
-- Записывать результат в audit_logs.
+- The user must exist.
+- The user must have a registered Face Profile.
+- Return an error if no face is present.
+- If image quality is low, prompt to repeat the scan.
+- Do not issue a JWT on mismatch.
+- Limit the number of attempts.
+- Record the result in audit_logs.
 
 ---
 
 # 10. Third-party Integration
 
-## 10.1. Основная идея
+## 10.1. Main Idea
 
-Разработчик стороннего сайта должен иметь возможность интегрировать NextFace максимально просто.
+A third-party website developer must be able to integrate NextFace as simply as possible.
 
-Все пользовательские аккаунты и биометрические данные находятся на стороне NextFace.
+All user accounts and biometric data reside on the NextFace side.
 
-Сторонний сайт не должен получать:
-- Пароли.
-- Фотографии лица.
+The third-party website must not receive:
+- Passwords.
+- Face photographs.
 - Face embeddings.
-- Внутренние пользовательские данные NextFace.
+- Internal NextFace user data.
 
-Он получает только разрешённые данные пользователя и подтверждение успешной авторизации.
+It receives only the permitted user data and confirmation of successful authorization.
 
 ## 10.2. Developer Portal
 
-Создать раздел Developer Portal.
+Create a Developer Portal section.
 
-Функции:
+Functions:
 
-- Создание приложения.
-- Просмотр Client ID.
-- Генерация Client Secret.
-- Настройка Redirect URL.
-- Просмотр подключённых приложений.
-- Удаление приложения.
-- Перевыпуск Client Secret.
+- Create an application.
+- View the Client ID.
+- Generate the Client Secret.
+- Configure the Redirect URL.
+- View connected applications.
+- Delete an application.
+- Reissue the Client Secret.
 
-При регистрации приложения обязательно проверять Redirect URL.
+When registering an application, the Redirect URL must be validated.
 
-Не разрешать произвольные redirect адреса.
+Do not allow arbitrary redirect addresses.
 
 ## 10.3. Authorization Flow
 
@@ -732,20 +732,20 @@ RETURN USER IDENTITY DATA
 THIRD-PARTY BACKEND CREATES ITS OWN SESSION
 ```
 
-Authorization code должен:
-- Быть случайным и криптографически стойким.
-- Иметь короткий срок действия.
-- Использоваться только один раз.
-- Быть связанным с конкретным приложением.
-- Храниться в БД в виде хэша.
+The authorization code must:
+- Be random and cryptographically strong.
+- Have a short lifetime.
+- Be used only once.
+- Be bound to a specific application.
+- Be stored in the DB as a hash.
 
-Client Secret используется только серверной частью стороннего сайта.
+The Client Secret is used only by the server side of the third-party website.
 
-Не передавать Client Secret в браузер.
+Do not transfer the Client Secret to the browser.
 
 ## 10.4. JavaScript SDK
 
-Создать небольшой SDK:
+Create a small SDK:
 
 ```typescript
 import { NextFace } from "@nextface/sdk";
@@ -757,17 +757,17 @@ const nextface = new NextFace({
 nextface.login();
 ```
 
-SDK выполняет только:
-- Проверку конфигурации.
-- Формирование URL авторизации.
-- Перенаправление на NextFace.
-- При необходимости обработку возврата пользователя.
+The SDK only performs:
+- Configuration validation.
+- Building the authorization URL.
+- Redirecting to NextFace.
+- Handling the user return if necessary.
 
-Не выполнять распознавание лица внутри SDK.
+Do not perform face recognition inside the SDK.
 
-Не хранить биометрические данные на стороне стороннего сайта.
+Do not store biometric data on the third-party website side.
 
-Для прототипа SDK может быть минимальным JavaScript/TypeScript-пакетом.
+For the prototype, the SDK may be a minimal JavaScript/TypeScript package.
 
 ---
 
@@ -826,7 +826,7 @@ SDK выполняет только:
 | POST | /face/compare | Compare embeddings |
 | POST | /face/liveness | Basic liveness check |
 
-Face Service не должен выдавать JWT или самостоятельно создавать пользователей.
+The Face Service must not issue JWTs or create users on its own.
 
 ---
 
@@ -836,12 +836,12 @@ Face Service не должен выдавать JWT или самостояте�
 
 ### Landing Page
 
-- Описание NextFace.
-- Основные преимущества.
-- Как работает система.
-- Кнопка Register.
-- Кнопка Login.
-- Кнопка Developers.
+- NextFace description.
+- Key advantages.
+- How the system works.
+- Register button.
+- Login button.
+- Developers button.
 
 ### Registration Page
 
@@ -859,9 +859,9 @@ Face Service не должен выдавать JWT или самостояте�
 
 ## 12.2. Face Scanner
 
-Основной экран биометрической авторизации.
+The main biometric authorization screen.
 
-Элементы:
+Elements:
 
 - Camera Preview.
 - Face Frame.
@@ -872,7 +872,7 @@ Face Service не должен выдавать JWT или самостояте�
 - Error State.
 - Cancel Button.
 
-Возможные состояния:
+Possible states:
 
 1. Waiting for camera.
 2. Camera permission requested.
@@ -916,342 +916,342 @@ Face Service не должен выдавать JWT или самостояте�
 
 # 13. UI/UX Requirements
 
-Проект является прототипом для предмета Human-Computer Interaction.
+The project is a prototype for a Human-Computer Interaction course.
 
-Особое внимание уделить взаимодействию пользователя с интерфейсом.
+Pay special attention to the user's interaction with the interface.
 
-Обязательные принципы:
+Mandatory principles:
 
-- Простая навигация.
-- Понятные названия элементов.
-- Минимальное количество шагов.
-- Чёткая обратная связь.
-- Видимые состояния загрузки.
-- Понятные ошибки.
-- Подтверждение важных действий.
-- Возможность отменить сканирование.
-- Адаптивный дизайн.
-- Доступность интерфейса с клавиатуры.
+- Simple navigation.
+- Clear element names.
+- Minimum number of steps.
+- Clear feedback.
+- Visible loading states.
+- Understandable errors.
+- Confirmation of important actions.
+- Ability to cancel scanning.
+- Responsive design.
+- Keyboard accessibility of the interface.
 
-Особое внимание уделить Face Scanner.
+Pay special attention to the Face Scanner.
 
-Пользователь всегда должен понимать:
-- Что сейчас делает система.
-- Видит ли камера его лицо.
-- Правильно ли он расположен.
-- Идёт ли проверка.
-- Успешна ли авторизация.
-- Почему произошла ошибка.
+The user must always understand:
+- What the system is currently doing.
+- Whether the camera sees their face.
+- Whether they are positioned correctly.
+- Whether a check is in progress.
+- Whether authorization was successful.
+- Why an error occurred.
 
 ---
 
 # 14. Security Requirements
 
-Даже для учебного прототипа соблюдать следующие правила:
+Even for an educational prototype, follow these rules:
 
-- Пароли хранить только в виде BCrypt-хэшей.
-- JWT подписывать секретным ключом.
-- Проверять expiration JWT.
-- Не хранить Client Secret в frontend.
-- Не передавать embeddings сторонним сайтам.
-- Проверять Redirect URL.
-- Использовать одноразовые authorization codes.
-- Ограничивать срок действия кодов.
-- Ограничивать количество попыток Face Login.
-- Проверять входные данные.
-- Не записывать секреты и биометрию в логи.
-- Ограничить доступ к Face Service.
-- Не разрешать прямой доступ браузера к внутреннему Face Service.
+- Store passwords only as BCrypt hashes.
+- Sign JWTs with a secret key.
+- Validate JWT expiration.
+- Do not store the Client Secret in the frontend.
+- Do not transfer embeddings to third-party websites.
+- Validate the Redirect URL.
+- Use one-time authorization codes.
+- Limit the lifetime of codes.
+- Limit the number of Face Login attempts.
+- Validate input data.
+- Do not log secrets or biometrics.
+- Restrict access to the Face Service.
+- Do not allow direct browser access to the internal Face Service.
 
-Биометрические embeddings необходимо защищать при хранении и передаче.
+Biometric embeddings must be protected at rest and in transit.
 
-Для реального использования необходимо учитывать GDPR и требования к обработке биометрических данных. Учебный прототип не следует представлять как production-ready систему.
+For real-world use, GDPR and biometric data processing requirements must be taken into account. The educational prototype must not be presented as a production-ready system.
 
 ---
 
 # 15. Development Roadmap
 
-Все задачи должны выполняться последовательно.
+All tasks must be performed sequentially.
 
-AI-разработчик должен самостоятельно обновлять чек-листы в этом документе после реализации и проверки каждой задачи.
+The AI developer must independently update the checklists in this document after implementing and verifying each task.
 
-Статусы:
+Statuses:
 - [ ] Not Started.
 - [x] Completed and tested.
 - [~] In Progress.
 - [!] Blocked / Needs attention.
 
-Не ставить [x], если:
-- Код только написан, но не проверен.
-- Endpoint не протестирован.
-- Компонент не запускается.
-- Интеграция не проверена.
-- Функция реализована только частично.
+Do not mark [x] if:
+- The code is only written but not verified.
+- The endpoint is not tested.
+- The component does not start.
+- The integration is not verified.
+- The feature is only partially implemented.
 
 ## Phase 1 — Project Setup
 
-- [ ] Создать структуру проекта.
-- [ ] Инициализировать Next.js.
-- [ ] Инициализировать Spring Boot.
-- [ ] Инициализировать FastAPI.
-- [ ] Настроить PostgreSQL.
-- [ ] Настроить конфигурацию окружения.
-- [ ] Настроить CORS.
-- [ ] Проверить запуск всех компонентов.
-- [ ] Создать базовый README.
+- [ ] Create the project structure.
+- [ ] Initialize Next.js.
+- [ ] Initialize Spring Boot.
+- [ ] Initialize FastAPI.
+- [ ] Configure PostgreSQL.
+- [ ] Configure the environment configuration.
+- [ ] Configure CORS.
+- [ ] Verify that all components start.
+- [ ] Create a basic README.
 
-**Definition of Done:** все приложения запускаются и могут взаимодействовать.
+**Definition of Done:** all applications start and can interact.
 
 ## Phase 2 — Backend Authentication
 
-- [ ] Создать сущность User.
-- [ ] Создать UserRepository.
-- [ ] Создать Registration DTO.
-- [ ] Создать Login DTO.
-- [ ] Реализовать регистрацию.
-- [ ] Добавить BCrypt.
-- [ ] Реализовать Login.
-- [ ] Реализовать JWT generation.
-- [ ] Реализовать JWT validation.
-- [ ] Настроить Spring Security.
-- [ ] Реализовать GET /api/auth/me.
-- [ ] Проверить регистрацию и вход через API.
+- [ ] Create the User entity.
+- [ ] Create the UserRepository.
+- [ ] Create the Registration DTO.
+- [ ] Create the Login DTO.
+- [ ] Implement registration.
+- [ ] Add BCrypt.
+- [ ] Implement Login.
+- [ ] Implement JWT generation.
+- [ ] Implement JWT validation.
+- [ ] Configure Spring Security.
+- [ ] Implement GET /api/auth/me.
+- [ ] Verify registration and login via the API.
 
-**Definition of Done:** пользователь может зарегистрироваться и авторизоваться через JWT.
+**Definition of Done:** a user can register and authenticate via JWT.
 
 ## Phase 3 — Face Service
 
-- [ ] Создать FastAPI приложение.
-- [ ] Подключить OpenCV.
-- [ ] Подключить MediaPipe.
-- [ ] Настроить Face Detection.
-- [ ] Проверять количество лиц в кадре.
-- [ ] Проверять качество изображения.
-- [ ] Выбрать модель распознавания лиц.
-- [ ] Проверить лицензию модели.
-- [ ] Настроить ONNX Runtime.
-- [ ] Реализовать Face Alignment.
-- [ ] Реализовать Embedding Generation.
-- [ ] Реализовать Embedding Normalization.
-- [ ] Реализовать Face Matching.
-- [ ] Реализовать базовый Liveness.
-- [ ] Добавить обработку ошибок.
-- [ ] Протестировать API Face Service.
+- [ ] Create the FastAPI application.
+- [ ] Integrate OpenCV.
+- [ ] Integrate MediaPipe.
+- [ ] Configure Face Detection.
+- [ ] Verify the number of faces in the frame.
+- [ ] Verify image quality.
+- [ ] Choose a face recognition model.
+- [ ] Verify the model license.
+- [ ] Configure ONNX Runtime.
+- [ ] Implement Face Alignment.
+- [ ] Implement Embedding Generation.
+- [ ] Implement Embedding Normalization.
+- [ ] Implement Face Matching.
+- [ ] Implement basic Liveness.
+- [ ] Add error handling.
+- [ ] Test the Face Service API.
 
-**Definition of Done:** Face Service способен обнаруживать лицо, создавать embedding и сравнивать два шаблона.
+**Definition of Done:** the Face Service is able to detect a face, create an embedding, and compare two templates.
 
 ## Phase 4 — Face Enrollment
 
-- [ ] Создать FaceProfile entity.
-- [ ] Создать FaceProfileRepository.
-- [ ] Реализовать POST /api/face/enroll.
-- [ ] Проверять JWT пользователя.
-- [ ] Получать изображение от frontend.
-- [ ] Передавать изображение в Face Service.
-- [ ] Получать embedding.
-- [ ] Сохранять embedding в PostgreSQL.
-- [ ] Реализовать обновление Face Profile.
-- [ ] Реализовать удаление Face Profile.
-- [ ] Проверить полный сценарий регистрации лица.
+- [ ] Create the FaceProfile entity.
+- [ ] Create the FaceProfileRepository.
+- [ ] Implement POST /api/face/enroll.
+- [ ] Validate the user's JWT.
+- [ ] Receive the image from the frontend.
+- [ ] Pass the image to the Face Service.
+- [ ] Obtain the embedding.
+- [ ] Save the embedding in PostgreSQL.
+- [ ] Implement Face Profile update.
+- [ ] Implement Face Profile deletion.
+- [ ] Verify the full face enrollment scenario.
 
-**Definition of Done:** зарегистрированный пользователь может привязать своё лицо к аккаунту.
+**Definition of Done:** a registered user can link their face to the account.
 
 ## Phase 5 — Face Authentication
 
-- [ ] Реализовать POST /api/face/login.
-- [ ] Получать изображение лица.
-- [ ] Генерировать embedding.
-- [ ] Получать сохранённый Face Profile.
-- [ ] Выполнять Face Matching.
-- [ ] Настроить threshold.
-- [ ] Обрабатывать отсутствие совпадения.
-- [ ] Обрабатывать отсутствие Face Profile.
-- [ ] Реализовать ограничение попыток.
-- [ ] Генерировать JWT при успешном распознавании.
-- [ ] Записывать результат в audit_logs.
-- [ ] Проверить успешную и неуспешную авторизацию.
+- [ ] Implement POST /api/face/login.
+- [ ] Receive the face image.
+- [ ] Generate the embedding.
+- [ ] Retrieve the stored Face Profile.
+- [ ] Perform Face Matching.
+- [ ] Configure the threshold.
+- [ ] Handle the absence of a match.
+- [ ] Handle the absence of a Face Profile.
+- [ ] Implement attempt limiting.
+- [ ] Generate a JWT on successful recognition.
+- [ ] Record the result in audit_logs.
+- [ ] Verify successful and unsuccessful authorization.
 
-**Definition of Done:** пользователь может войти в NextFace посредством распознавания лица.
+**Definition of Done:** a user can log in to NextFace via face recognition.
 
 ## Phase 6 — Frontend
 
-- [ ] Создать Landing Page.
-- [ ] Создать Registration Page.
-- [ ] Создать Login Page.
-- [ ] Реализовать формы регистрации.
-- [ ] Реализовать формы входа.
-- [ ] Реализовать JWT session handling.
-- [ ] Создать Camera Component.
-- [ ] Реализовать получение разрешения камеры.
-- [ ] Создать Face Scanner UI.
-- [ ] Реализовать состояния сканирования.
-- [ ] Подключить Face Enrollment.
-- [ ] Подключить Face Login.
-- [ ] Создать Dashboard.
-- [ ] Создать Profile Settings.
-- [ ] Создать Connected Applications.
-- [ ] Создать Developer Portal.
-- [ ] Проверить адаптивность интерфейса.
-- [ ] Проверить обработку ошибок.
+- [ ] Create the Landing Page.
+- [ ] Create the Registration Page.
+- [ ] Create the Login Page.
+- [ ] Implement registration forms.
+- [ ] Implement login forms.
+- [ ] Implement JWT session handling.
+- [ ] Create the Camera Component.
+- [ ] Implement camera permission acquisition.
+- [ ] Create the Face Scanner UI.
+- [ ] Implement scanning states.
+- [ ] Connect Face Enrollment.
+- [ ] Connect Face Login.
+- [ ] Create the Dashboard.
+- [ ] Create Profile Settings.
+- [ ] Create Connected Applications.
+- [ ] Create the Developer Portal.
+- [ ] Verify interface responsiveness.
+- [ ] Verify error handling.
 
-**Definition of Done:** основные функции доступны через графический интерфейс.
+**Definition of Done:** the main features are available through the graphical interface.
 
 ## Phase 7 — Third-party Integration
 
-- [ ] Создать Application entity.
-- [ ] Создать ApplicationRepository.
-- [ ] Реализовать регистрацию приложений.
-- [ ] Генерировать Client ID.
-- [ ] Генерировать Client Secret.
-- [ ] Хранить Client Secret в виде хэша.
-- [ ] Реализовать Redirect URL validation.
-- [ ] Создать AuthorizationCode entity.
-- [ ] Реализовать генерацию authorization code.
-- [ ] Реализовать expiration.
-- [ ] Реализовать одноразовое использование кода.
-- [ ] Реализовать проверку Client ID.
-- [ ] Реализовать проверку Client Secret.
-- [ ] Реализовать обмен authorization code.
-- [ ] Реализовать выдачу разрешённых данных пользователя.
-- [ ] Создать минимальный JavaScript SDK.
-- [ ] Реализовать метод login().
-- [ ] Создать demo-client.
-- [ ] Проверить полный сценарий интеграции.
+- [ ] Create the Application entity.
+- [ ] Create the ApplicationRepository.
+- [ ] Implement application registration.
+- [ ] Generate the Client ID.
+- [ ] Generate the Client Secret.
+- [ ] Store the Client Secret as a hash.
+- [ ] Implement Redirect URL validation.
+- [ ] Create the AuthorizationCode entity.
+- [ ] Implement authorization code generation.
+- [ ] Implement expiration.
+- [ ] Implement one-time use of the code.
+- [ ] Implement Client ID validation.
+- [ ] Implement Client Secret validation.
+- [ ] Implement authorization code exchange.
+- [ ] Implement issuance of permitted user data.
+- [ ] Create a minimal JavaScript SDK.
+- [ ] Implement the login() method.
+- [ ] Create the demo-client.
+- [ ] Verify the full integration scenario.
 
-**Definition of Done:** сторонний сайт может использовать NextFace для авторизации пользователя.
+**Definition of Done:** a third-party website can use NextFace to authorize a user.
 
 ## Phase 8 — Testing and Finalization
 
-- [ ] Проверить регистрацию пользователя.
-- [ ] Проверить вход по паролю.
-- [ ] Проверить JWT.
-- [ ] Проверить регистрацию лица.
-- [ ] Проверить вход по лицу.
-- [ ] Проверить отсутствие лица.
-- [ ] Проверить несколько лиц в кадре.
-- [ ] Проверить низкое качество изображения.
-- [ ] Проверить Liveness.
-- [ ] Проверить неправильный пароль.
-- [ ] Проверить истёкший JWT.
-- [ ] Проверить неправильный authorization code.
-- [ ] Проверить повторное использование кода.
-- [ ] Проверить неправильный Redirect URL.
-- [ ] Проверить интеграцию demo-client.
-- [ ] Проверить защиту API.
-- [ ] Исправить обнаруженные ошибки.
-- [ ] Обновить README.
-- [ ] Добавить инструкцию запуска проекта.
+- [ ] Verify user registration.
+- [ ] Verify password login.
+- [ ] Verify JWT.
+- [ ] Verify face enrollment.
+- [ ] Verify face login.
+- [ ] Verify the absence of a face.
+- [ ] Verify multiple faces in the frame.
+- [ ] Verify low image quality.
+- [ ] Verify Liveness.
+- [ ] Verify an incorrect password.
+- [ ] Verify an expired JWT.
+- [ ] Verify an incorrect authorization code.
+- [ ] Verify code reuse.
+- [ ] Verify an incorrect Redirect URL.
+- [ ] Verify the demo-client integration.
+- [ ] Verify API protection.
+- [ ] Fix discovered bugs.
+- [ ] Update the README.
+- [ ] Add project launch instructions.
 
-**Definition of Done:** все основные пользовательские сценарии работают и проверены.
+**Definition of Done:** all main user scenarios work and are verified.
 
 ---
 
 # 16. AI Developer Instructions
 
-Этот раздел обязателен для AI-разработчика.
+This section is mandatory for the AI developer.
 
-При работе над NextFace следовать следующим правилам.
+Follow these rules when working on NextFace.
 
 ## 16.1. General Rules
 
-1. Перед началом работы изучить текущую структуру проекта.
-2. Прочитать этот PROJECT_PLAN.md полностью.
-3. Проверить, какие задачи уже выполнены.
-4. Не переписывать существующий рабочий код без необходимости.
-5. Не создавать дублирующие классы и компоненты.
-6. Соблюдать существующую архитектуру.
-7. Не добавлять технологии, которых нет в Technology Stack, без необходимости.
-8. Не усложнять проект.
-9. Не реализовывать несколько крупных этапов одновременно.
-10. После завершения каждого этапа проверить его работоспособность.
+1. Study the current project structure before starting work.
+2. Read this PROJECT_PLAN.md in full.
+3. Check which tasks have already been completed.
+4. Do not rewrite existing working code without necessity.
+5. Do not create duplicate classes and components.
+6. Follow the existing architecture.
+7. Do not add technologies that are not in the Technology Stack without necessity.
+8. Do not complicate the project.
+9. Do not implement several large phases at once.
+10. After completing each phase, verify that it works.
 
 ## 16.2. Task Management
 
-После выполнения каждой задачи:
+After completing each task:
 
-1. Проверить результат.
-2. Запустить необходимые тесты.
-3. Проверить взаимодействие компонентов.
-4. Обновить соответствующий checkbox в PROJECT_PLAN.md.
-5. При необходимости добавить краткое примечание о реализации.
+1. Verify the result.
+2. Run the necessary tests.
+3. Verify component interaction.
+4. Update the corresponding checkbox in PROJECT_PLAN.md.
+5. If necessary, add a brief note about the implementation.
 
-Не отмечать задачу выполненной, если она не была проверена.
+Do not mark a task as completed if it has not been verified.
 
-Если задача частично выполнена, использовать [~].
+If a task is partially completed, use [~].
 
-Если задача заблокирована, использовать [!] и написать причину.
+If a task is blocked, use [!] and write the reason.
 
 ## 16.3. Architecture Rules
 
-- Frontend общается с Backend через REST API.
-- Backend общается с Face Service через HTTP.
-- Backend является единственным компонентом, который работает с PostgreSQL.
-- Face Service отвечает только за обработку и анализ изображений.
-- JWT выдаётся только Spring Boot Backend.
-- Все пользовательские данные принадлежат NextFace.
-- SDK не выполняет распознавание лиц.
-- Сторонние сайты не получают биометрические данные.
-- Не использовать OAuth Server или дополнительные инфраструктурные компоненты.
+- The Frontend communicates with the Backend via REST API.
+- The Backend communicates with the Face Service via HTTP.
+- The Backend is the only component that works with PostgreSQL.
+- The Face Service is responsible only for image processing and analysis.
+- JWTs are issued only by the Spring Boot Backend.
+- All user data belongs to NextFace.
+- The SDK does not perform face recognition.
+- Third-party websites do not receive biometric data.
+- Do not use an OAuth Server or additional infrastructure components.
 
-Для интеграции использовать простой собственный механизм одноразовых authorization codes, описанный в разделе 10.
+For integration, use the simple custom one-time authorization code mechanism described in section 10.
 
 ## 16.4. Code Quality
 
-- Использовать понятные имена классов и методов.
-- Разделять Controller, Service и Repository.
-- Использовать DTO для API.
-- Не помещать бизнес-логику в Controller.
-- Добавлять обработку ошибок.
-- Валидировать входящие запросы.
-- Не дублировать бизнес-логику.
-- Соблюдать TypeScript typing.
-- Использовать Pydantic schemas в FastAPI.
-- Добавлять тесты для критических сценариев.
+- Use clear class and method names.
+- Separate Controller, Service, and Repository.
+- Use DTOs for the API.
+- Do not put business logic in the Controller.
+- Add error handling.
+- Validate incoming requests.
+- Do not duplicate business logic.
+- Follow TypeScript typing.
+- Use Pydantic schemas in FastAPI.
+- Add tests for critical scenarios.
 
 ## 16.5. Work Process
 
-Работать небольшими итерациями.
+Work in small iterations.
 
-Для каждой итерации:
+For each iteration:
 
-1. Определить конкретную задачу.
-2. Изучить связанные файлы.
-3. Реализовать задачу.
-4. Проверить результат.
-5. Обновить чек-лист.
-6. Сообщить, что сделано и что осталось.
+1. Define a specific task.
+2. Study the related files.
+3. Implement the task.
+4. Verify the result.
+5. Update the checklist.
+6. Report what has been done and what remains.
 
-Не переходить к следующему крупному этапу, если текущий содержит критические ошибки.
+Do not move on to the next large phase if the current one contains critical errors.
 
-Если обнаружено противоречие между этим документом и существующей реализацией, сначала описать проблему и предложить решение, а не молча менять архитектуру.
+If a contradiction is found between this document and the existing implementation, first describe the problem and propose a solution rather than silently changing the architecture.
 
 ---
 
 # 17. Project Completion Criteria
 
-Проект считается завершённым, когда:
+The project is considered complete when:
 
-- [ ] Пользователь может зарегистрировать аккаунт.
-- [ ] Пользователь может войти через email и пароль.
-- [ ] Пользователь может зарегистрировать лицо.
-- [ ] Система может распознать зарегистрированного пользователя.
-- [ ] Система выдаёт JWT после успешной авторизации.
-- [ ] Пользователь может управлять своим профилем.
-- [ ] Разработчик может зарегистрировать стороннее приложение.
-- [ ] Разработчик может получить Client ID и Client Secret.
-- [ ] Сторонний сайт может перенаправить пользователя в NextFace.
-- [ ] NextFace может вернуть одноразовый authorization code.
-- [ ] Сторонний сервер может обменять код на разрешённые данные пользователя.
-- [ ] SDK обеспечивает простой запуск процесса авторизации.
-- [ ] Demo Client демонстрирует успешную интеграцию.
-- [ ] Основные сценарии протестированы.
-- [ ] README содержит инструкцию запуска.
+- [ ] A user can register an account.
+- [ ] A user can log in via email and password.
+- [ ] A user can enroll a face.
+- [ ] The system can recognize a registered user.
+- [ ] The system issues a JWT after successful authorization.
+- [ ] A user can manage their profile.
+- [ ] A developer can register a third-party application.
+- [ ] A developer can obtain a Client ID and Client Secret.
+- [ ] A third-party website can redirect the user to NextFace.
+- [ ] NextFace can return a one-time authorization code.
+- [ ] A third-party server can exchange the code for permitted user data.
+- [ ] The SDK provides a simple way to start the authorization process.
+- [ ] The Demo Client demonstrates successful integration.
+- [ ] The main scenarios are tested.
+- [ ] The README contains launch instructions.
 
 ---
 
 # 18. Current Project Status
 
-AI Developer должен поддерживать этот раздел в актуальном состоянии.
+The AI Developer must keep this section up to date.
 
 **Current Phase:** Not Started
 
@@ -1265,9 +1265,9 @@ AI Developer должен поддерживать этот раздел в ак
 
 **Last Updated:** Not Started
 
-После каждой рабочей сессии обновлять этот раздел.
+Update this section after every work session.
 
-Не удалять историю выполненных задач и не сбрасывать уже отмеченные checkbox.
+Do not delete the history of completed tasks and do not reset already checked checkboxes.
 
 ---
 
