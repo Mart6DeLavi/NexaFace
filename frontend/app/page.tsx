@@ -1,9 +1,20 @@
+import Link from "next/link";
+
 import { HealthStatus } from "@/components/HealthStatus";
 
 const features = [
-  "One account for every integrated app",
-  "Face recognition instead of passwords",
-  "One-time authorization codes",
+  {
+    title: "One account",
+    description: "A single NextFace identity works across every connected app.",
+  },
+  {
+    title: "Face sign-in",
+    description: "Enroll once and authenticate with a selfie instead of a password.",
+  },
+  {
+    title: "Minimal data sharing",
+    description: "Apps receive a one-time code, never your face or embeddings.",
+  },
 ];
 
 export default function Home() {
@@ -23,14 +34,9 @@ export default function Home() {
           <span className="flex size-11 items-center justify-center rounded-xl bg-zinc-900 text-sm font-semibold tracking-tight text-white dark:bg-white dark:text-zinc-900">
             NF
           </span>
-          <div>
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-              Biometric authentication
-            </p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Phase 1 · Project setup
-            </p>
-          </div>
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            Centralized biometric authentication
+          </p>
         </div>
 
         <h1 className="mt-8 text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-50">
@@ -41,13 +47,33 @@ export default function Home() {
           NextFace — no passwords, no per-site accounts.
         </p>
 
-        <ul className="mt-6 grid gap-2 text-sm text-zinc-600 sm:grid-cols-3 dark:text-zinc-400">
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/register"
+            className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500"
+          >
+            Create account
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-xl border border-zinc-300 px-5 py-2.5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800/60"
+          >
+            Sign in
+          </Link>
+        </div>
+
+        <ul className="mt-8 grid gap-3 sm:grid-cols-3">
           {features.map((feature) => (
             <li
-              key={feature}
-              className="rounded-lg border border-zinc-200/80 bg-zinc-50/80 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-800/40"
+              key={feature.title}
+              className="rounded-xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-800/40"
             >
-              {feature}
+              <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {feature.title}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+                {feature.description}
+              </p>
             </li>
           ))}
         </ul>

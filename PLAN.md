@@ -1144,24 +1144,32 @@ Do not mark [x] if:
 
 ## Phase 6 — Frontend
 
-- [ ] Create the Landing Page.
-- [ ] Create the Registration Page.
-- [ ] Create the Login Page.
-- [ ] Implement registration forms.
-- [ ] Implement login forms.
-- [ ] Implement JWT session handling.
+- [x] Create the Landing Page.
+- [x] Create the Registration Page.
+- [x] Create the Login Page.
+- [x] Implement registration forms.
+- [x] Implement login forms.
+- [x] Implement JWT session handling.
 - [ ] Create the Camera Component.
 - [ ] Implement camera permission acquisition.
 - [ ] Create the Face Scanner UI.
 - [ ] Implement scanning states.
 - [ ] Connect Face Enrollment.
 - [ ] Connect Face Login.
-- [ ] Create the Dashboard.
+- [~] Create the Dashboard. <sub>account + face profile status implemented; profile settings pending</sub>
 - [ ] Create Profile Settings.
 - [ ] Create Connected Applications.
 - [ ] Create the Developer Portal.
-- [ ] Verify interface responsiveness.
-- [ ] Verify error handling.
+- [~] Verify interface responsiveness. <sub>responsive layout implemented; manual cross-device check pending</sub>
+- [~] Verify error handling. <sub>API errors are shown in the auth forms and dashboard; face flows pending</sub>
+
+> Implementation note (2026-11-18): the frontend uses the Next.js App Router with a client-side
+> `AuthProvider` that stores the JWT in `localStorage` (prototype only) and restores the session via
+> `GET /api/auth/me`. `services/api.ts` centralizes requests and maps backend errors to `ApiError`
+> with field details; pages added: `/login`, `/register`, protected `/dashboard`; the header shows
+> the session state. Verified: `npm run lint` clean, `npm run build` succeeds (routes `/`, `/login`,
+> `/register`, `/dashboard`); running `next start` returns HTTP 200 for all four routes and the
+> dashboard shell renders. No camera or face UI yet.
 
 **Definition of Done:** the main features are available through the graphical interface.
 
@@ -1324,13 +1332,13 @@ The AI Developer must keep this section up to date.
 
 **Current Phase:** Phase 6 — Frontend
 
-**Last Completed Task:** Phase 5: face authentication — 1:1 verification by email + image, cosine matching with configurable threshold, per-email attempt limiting, JWT issuance, audit logging, 44 backend tests
+**Last Completed Task:** Phase 6: auth UI — landing page, registration and login pages with forms, client-side JWT session handling, protected dashboard with account and face profile status
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings. Face profile replacement uses `POST /api/face/enroll?overwrite=true` rather than a separate PUT endpoint; `GET /api/face/profile` was added for enrollment status and is not listed in the section 11 API table. Face login requires the account email in addition to the image (1:1 verification, not 1:N identification); failed attempt counters are in-memory and per instance, so they reset on restart and are not shared between backend replicas; `audit_logs` maps `user_id`/`application_id` as plain UUID columns without database FK constraints.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings. Face profile replacement uses `POST /api/face/enroll?overwrite=true` rather than a separate PUT endpoint; `GET /api/face/profile` was added for enrollment status and is not listed in the section 11 API table. Face login requires the account email in addition to the image (1:1 verification, not 1:N identification); failed attempt counters are in-memory and per instance, so they reset on restart and are not shared between backend replicas; `audit_logs` maps `user_id`/`application_id` as plain UUID columns without database FK constraints. The frontend stores the JWT in `localStorage` (prototype trade-off); camera-based enrollment/login UI, profile settings, connected applications and the developer portal are not implemented yet.
 
-**Next Recommended Action:** Phase 6 — Frontend: landing page, authentication pages, face login UI and profile management
+**Next Recommended Action:** Phase 6 — Frontend: camera component and face scanner UI, then connect enrollment and face login
 
 **Last Updated:** 2026-11-18
 

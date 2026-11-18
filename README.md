@@ -193,6 +193,19 @@ npm run dev
 The application is available at http://localhost:3000. The home page shows the backend connection
 status by calling `GET /api/health`, so the backend should be running as well.
 
+Pages:
+
+| Route | Description |
+|---|---|
+| `/` | Landing page with links to registration and login |
+| `/login` | Email and password sign-in |
+| `/register` | Account registration |
+| `/dashboard` | Authenticated area showing the account and face profile status |
+
+The JWT is kept in `localStorage` for this prototype; production deployments should use
+httpOnly cookies. If `node_modules` looks much smaller than expected (iCloud Drive can offload
+files), restore it with `npm ci`.
+
 Production build:
 
 ```bash
@@ -280,6 +293,6 @@ not protection against professional photo, video or deepfake attacks.
 
 ## Status
 
-The project is at Phase 4 (Face Enrollment): authentication, face detection, quality checks,
-embeddings, matching and basic liveness are implemented. See the roadmap in [PLAN.md](PLAN.md) for
-the current checklist and next tasks.
+The project is at Phase 6 (Frontend): registration, login, JWT session handling and the dashboard
+are implemented; face enrollment/login UI, profile settings and the developer portal are pending.
+See the roadmap in [PLAN.md](PLAN.md) for the current checklist and next tasks.
