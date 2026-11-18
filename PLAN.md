@@ -1052,9 +1052,9 @@ Do not mark [x] if:
 - [x] Implement Embedding Generation. <sub>`POST /face/embedding`, 128-dimensional vector</sub>
 - [x] Implement Embedding Normalization. <sub>L2-normalized in the service</sub>
 - [x] Implement Face Matching. <sub>`POST /face/compare`, cosine similarity, threshold 0.363</sub>
-- [ ] Implement basic Liveness.
-- [~] Add error handling. <sub>stable error codes implemented for all face endpoints; liveness remains</sub>
-- [~] Test the Face Service API. <sub>14 tests cover detect, embedding and compare; liveness remains</sub>
+- [x] Implement basic Liveness. <sub>`POST /face/liveness`, MediaPipe landmarks, head turn / blink</sub>
+- [x] Add error handling. <sub>stable error codes implemented for all face endpoints</sub>
+- [x] Test the Face Service API. <sub>22 tests cover detect, embedding, compare and liveness</sub>
 
 > Implementation note (2026-11-18): `POST /face/detect` accepts `multipart/form-data` field
 > `image`, decodes it with OpenCV, detects faces with the MediaPipe Face Detector
@@ -1070,6 +1070,14 @@ Do not mark [x] if:
 > cosine similarity plus a match decision against `FACE_MATCH_THRESHOLD` (default 0.363).
 > Verified live: same face similarity 1.0, different faces 0.1316. The model expects raw 0-255
 > RGB pixels (no scaling), matching OpenCV's `FaceRecognizerSF` behaviour.
+>
+> Liveness (2026-11-18): `POST /face/liveness?challenge=turn_left|turn_right|blink` accepts 3–20
+> frames in the repeated `images` multipart field. MediaPipe Face Landmarker
+> (`models/face_landmarker.task`, Apache 2.0) provides dense landmarks; head turns use the signed
+> nose offset normalized by interocular distance (`FACE_LIVENESS_TURN_THRESHOLD`, default 0.08),
+> blinks use the eye aspect ratio (`FACE_LIVENESS_BLINK_THRESHOLD`, default 0.19). Errors:
+> `INVALID_FRAME_COUNT` (400), `NO_FACE_DETECTED` / `MULTIPLE_FACES` (422). This is a demo check,
+> not protection against professional attacks.
 
 **Definition of Done:** the Face Service is able to detect a face, create an embedding, and compare two templates.
 
@@ -1286,15 +1294,15 @@ The project is considered complete when:
 
 The AI Developer must keep this section up to date.
 
-**Current Phase:** Phase 3 — Face Service
+**Current Phase:** Phase 4 — Face Enrollment
 
-**Last Completed Task:** Phase 3: SFace recognition via ONNX Runtime — alignment, 128-d normalized embeddings, cosine matching, license verified (Apache 2.0), 14 tests
+**Last Completed Task:** Phase 3: basic liveness — MediaPipe Face Landmarker, head-turn and blink challenges, 22 tests
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. Liveness detection is not implemented yet. The match threshold (0.363) was validated only on two test portraits and needs a larger sample.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings.
 
-**Next Recommended Action:** Phase 3 — Face Service: implement basic liveness detection, then proceed to Phase 4
+**Next Recommended Action:** Phase 4 — Face Enrollment: backend-to-face-service client, enrollment endpoints and biometric profile storage
 
 **Last Updated:** 2026-11-18
 

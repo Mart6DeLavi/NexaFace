@@ -178,6 +178,7 @@ If port 8000 is already taken on your machine, pass another port to `--port`.
 | POST | `/face/detect` | Detect faces, check image quality (`multipart/form-data`, field `image`) |
 | POST | `/face/embedding` | Generate a 128-d embedding for the single face (`multipart/form-data`, field `image`) |
 | POST | `/face/compare` | Compare two embeddings with cosine similarity (JSON) |
+| POST | `/face/liveness` | Basic challenge-response liveness check (`turn_left`, `turn_right`, `blink`) from a frame sequence |
 
 ```bash
 curl -F "image=@photo.jpg;type=image/jpeg" http://localhost:8000/face/detect
@@ -185,6 +186,10 @@ curl -F "image=@photo.jpg;type=image/jpeg" http://localhost:8000/face/embedding
 curl -X POST http://localhost:8000/face/compare \
   -H "Content-Type: application/json" \
   -d '{"embedding1": [...], "embedding2": [...]}'
+curl -X POST "http://localhost:8000/face/liveness?challenge=turn_right" \
+  -F "images=@frame1.jpg;type=image/jpeg" \
+  -F "images=@frame2.jpg;type=image/jpeg" \
+  -F "images=@frame3.jpg;type=image/jpeg"
 ```
 
 Detection responses contain every detected face (box and confidence) and a quality report: blur
@@ -196,13 +201,20 @@ otherwise). `/face/compare` returns `similarity`, `match` and the configured `th
 (`FACE_MATCH_THRESHOLD`, default `0.363`).
 
 Errors use stable codes: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413), `NO_FACE_DETECTED`
-(422), `MULTIPLE_FACES` (422), `INVALID_EMBEDDING` (400), `EMBEDDING_DIMENSION_MISMATCH` (400).
+(422), `MULTIPLE_FACES` (422), `INVALID_EMBEDDING` (400), `EMBEDDING_DIMENSION_MISMATCH` (400),
+`INVALID_FRAME_COUNT` (400).
 
 Recognition uses SFace (`models/face_recognition_sface_2021dec.onnx`, Apache 2.0) via ONNX
 Runtime, with alignment based on the MediaPipe keypoints.
 
+Liveness is a demo challenge-response check based on MediaPipe Face Landmarker
+(`models/face_landmarker.task`): the service compares the nose offset relative to the eyes across
+3–20 frames (`turn_left` / `turn_right`, threshold `FACE_LIVENESS_TURN_THRESHOLD`, default `0.08`)
+or the eye aspect ratio (`blink`, threshold `FACE_LIVENESS_BLINK_THRESHOLD`, default `0.19`). This is
+not protection against professional photo, video or deepfake attacks.
+
 ## Status
 
-The project is at Phase 3 (Face Service): detection and image-quality checks are implemented; the
-embedding model and matching are next. See the roadmap in [PLAN.md](PLAN.md) for the current
-checklist and next tasks.
+The project is at Phase 4 (Face Enrollment): authentication, face detection, quality checks,
+embeddings, matching and basic liveness are implemented. See the roadmap in [PLAN.md](PLAN.md) for
+the current checklist and next tasks.

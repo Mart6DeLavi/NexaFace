@@ -8,7 +8,7 @@ never manages users or issues tokens.
 from fastapi import FastAPI
 
 from app.errors import register_error_handlers
-from app.routes import face, health
+from app.routes import face, health, liveness
 
 app = FastAPI(
     title="NextFace Face Service",
@@ -20,3 +20,4 @@ app = FastAPI(
 register_error_handlers(app)
 app.include_router(health.router)
 app.include_router(face.router)
+app.include_router(liveness.router)

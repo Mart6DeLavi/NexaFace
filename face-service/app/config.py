@@ -25,7 +25,12 @@ def _env_int(name: str, default: int) -> int:
 class Settings:
     detector_model_path: Path
     recognition_model_path: Path
+    landmarker_model_path: Path
     match_threshold: float
+    liveness_turn_threshold: float
+    liveness_blink_threshold: float
+    liveness_min_frames: int
+    liveness_max_frames: int
     min_detection_confidence: float
     min_face_size_px: int
     blur_threshold: float
@@ -47,10 +52,21 @@ class Settings:
                 str(SERVICE_ROOT / "models" / "face_recognition_sface_2021dec.onnx"),
             )
         )
+        landmarker_model_path = Path(
+            os.getenv(
+                "FACE_LANDMARKER_MODEL",
+                str(SERVICE_ROOT / "models" / "face_landmarker.task"),
+            )
+        )
         return cls(
             detector_model_path=model_path,
             recognition_model_path=recognition_model_path,
+            landmarker_model_path=landmarker_model_path,
             match_threshold=_env_float("FACE_MATCH_THRESHOLD", 0.363),
+            liveness_turn_threshold=_env_float("FACE_LIVENESS_TURN_THRESHOLD", 0.08),
+            liveness_blink_threshold=_env_float("FACE_LIVENESS_BLINK_THRESHOLD", 0.19),
+            liveness_min_frames=_env_int("FACE_LIVENESS_MIN_FRAMES", 3),
+            liveness_max_frames=_env_int("FACE_LIVENESS_MAX_FRAMES", 20),
             min_detection_confidence=_env_float("FACE_MIN_DETECTION_CONFIDENCE", 0.5),
             min_face_size_px=_env_int("FACE_MIN_SIZE_PX", 80),
             blur_threshold=_env_float("FACE_BLUR_THRESHOLD", 60.0),
