@@ -990,19 +990,22 @@ Do not mark [x] if:
 
 ## Phase 1 — Project Setup
 
-- [~] Create the project structure. <sub>backend + root files done; frontend, face-service, sdk, demo-client pending</sub>
-- [ ] Initialize Next.js.
+- [~] Create the project structure. <sub>backend, frontend + root files done; face-service, sdk, demo-client pending</sub>
+- [x] Initialize Next.js.
 - [x] Initialize Spring Boot.
 - [ ] Initialize FastAPI.
 - [x] Configure PostgreSQL.
 - [x] Configure the environment configuration.
 - [x] Configure CORS.
-- [~] Verify that all components start. <sub>backend verified; other components not created yet</sub>
+- [~] Verify that all components start. <sub>backend and frontend verified (health request from the UI); face-service not created yet</sub>
 - [x] Create a basic README.
 
-> Implementation note (2026-11-12): the backend is a Gradle project (`backend/`, Spring Boot 3.5.16,
+> Implementation note (2026-11-18): the backend is a Gradle project (`backend/`, Spring Boot 3.5.16,
 > Java 21, Gradle wrapper 8.13). It starts on port 8080, connects to PostgreSQL, exposes
 > `GET /api/health` and allows the origin configured in `CORS_ALLOWED_ORIGINS`. Tests: `./gradlew test`.
+> The frontend (`frontend/`, Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4) starts on
+> port 3000, calls `/api/health` from the home page and shows the backend status. Checks:
+> `npm run lint` and `npm run build`.
 
 **Definition of Done:** all applications start and can interact.
 
@@ -1259,15 +1262,15 @@ The AI Developer must keep this section up to date.
 
 **Current Phase:** Phase 1 — Project Setup
 
-**Last Completed Task:** Phase 1: Spring Boot backend initialization (Gradle), PostgreSQL connection, environment configuration, CORS, basic README
+**Last Completed Task:** Phase 1: Next.js frontend initialization with Next.js 16 App Router, TypeScript, Tailwind CSS 4 and backend health-status integration
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Next.js, FastAPI, SDK and demo-client are not created yet.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. FastAPI, SDK and demo-client are not created yet.
 
-**Next Recommended Action:** Phase 1 — Initialize Next.js frontend
+**Next Recommended Action:** Phase 1 — Initialize FastAPI face service
 
-**Last Updated:** 2026-11-12
+**Last Updated:** 2026-11-18
 
 Update this section after every work session.
 
