@@ -990,14 +990,14 @@ Do not mark [x] if:
 
 ## Phase 1 — Project Setup
 
-- [~] Create the project structure. <sub>backend, frontend + root files done; face-service, sdk, demo-client pending</sub>
+- [~] Create the project structure. <sub>backend, frontend, face-service + root files done; sdk, demo-client belong to Phase 7</sub>
 - [x] Initialize Next.js.
 - [x] Initialize Spring Boot.
-- [ ] Initialize FastAPI.
+- [x] Initialize FastAPI.
 - [x] Configure PostgreSQL.
 - [x] Configure the environment configuration.
 - [x] Configure CORS.
-- [~] Verify that all components start. <sub>backend and frontend verified (health request from the UI); face-service not created yet</sub>
+- [~] Verify that all components start. <sub>all three applications start; frontend↔backend verified; backend→face-service call is added in Phase 3</sub>
 - [x] Create a basic README.
 
 > Implementation note (2026-11-18): the backend is a Gradle project (`backend/`, Spring Boot 3.5.16,
@@ -1006,6 +1006,8 @@ Do not mark [x] if:
 > The frontend (`frontend/`, Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4) starts on
 > port 3000, calls `/api/health` from the home page and shows the backend status. Checks:
 > `npm run lint` and `npm run build`.
+> The face service (`face-service/`, FastAPI 0.164 on Python 3.12, Uvicorn) exposes `GET /health` on
+> port 8000 by default; it is internal and has no CORS. Tests: `.venv/bin/python -m pytest`.
 
 **Definition of Done:** all applications start and can interact.
 
@@ -1262,13 +1264,13 @@ The AI Developer must keep this section up to date.
 
 **Current Phase:** Phase 1 — Project Setup
 
-**Last Completed Task:** Phase 1: Next.js frontend initialization with Next.js 16 App Router, TypeScript, Tailwind CSS 4 and backend health-status integration
+**Last Completed Task:** Phase 1: FastAPI face service initialization (FastAPI 0.164, Uvicorn, health endpoint, pytest)
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. FastAPI, SDK and demo-client are not created yet.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7).
 
-**Next Recommended Action:** Phase 1 — Initialize FastAPI face service
+**Next Recommended Action:** Phase 2 — Backend Authentication: User entity, registration, login, JWT
 
 **Last Updated:** 2026-11-18
 

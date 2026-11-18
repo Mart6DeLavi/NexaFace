@@ -25,6 +25,14 @@ build/
 bin/
 !**/gradle/wrapper/gradle-wrapper.jar
 
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
 # Env / secrets
 .env
 *.local

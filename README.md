@@ -12,22 +12,23 @@ The full technical specification and roadmap live in [PLAN.md](PLAN.md).
 ```text
 backend/       Spring Boot REST API (Java 21)
 frontend/      Next.js web application (TypeScript, Tailwind CSS)
-face-service/  Python FastAPI face recognition service (planned)
-sdk/           JavaScript SDK (planned)
-demo-client/   Demo integration site (planned)
+face-service/  Python FastAPI face analysis service
+sdk/           JavaScript SDK (planned, Phase 7)
+demo-client/   Demo integration site (planned, Phase 7)
 ```
 
 ## Tech stack
 
 - Backend: Java 21, Spring Boot 3.5, Spring Web, Spring Data JPA, Spring Validation, PostgreSQL
 - Frontend: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 (shadcn/ui planned)
-- Face service: Python 3, FastAPI, OpenCV, MediaPipe, ONNX Runtime (planned)
+- Face service: Python 3, FastAPI, Uvicorn (OpenCV / MediaPipe / ONNX Runtime planned)
 
 ## Requirements
 
 - JDK 21+
 - Gradle wrapper is included (Gradle 8.13), no separate installation required
 - Node.js 20.9+ with npm
+- Python 3.11+
 - Docker (optional, for PostgreSQL) or a local PostgreSQL 17 instance
 
 ## Configuration
@@ -107,7 +108,36 @@ cd frontend
 npm run lint
 ```
 
+## Running the face service
+
+The face service is internal: only the Spring Boot backend calls it, browsers never access it
+directly.
+
+```bash
+cd face-service
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+Verify it is up:
+
+```bash
+curl http://localhost:8000/health
+# {"status":"UP","service":"face-service"}
+```
+
+Run the tests:
+
+```bash
+cd face-service
+.venv/bin/python -m pytest
+```
+
+If port 8000 is already taken on your machine, pass another port to `--port`.
+
 ## Status
 
-The project is at Phase 1 (Project Setup): the backend and the frontend are running and can
-exchange requests. See the roadmap in [PLAN.md](PLAN.md) for the current checklist and next tasks.
+The project is at Phase 1 (Project Setup): all three applications start, and the frontend
+exchanges requests with the backend. See the roadmap in [PLAN.md](PLAN.md) for the current
+checklist and next tasks.
