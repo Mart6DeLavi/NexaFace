@@ -42,6 +42,8 @@ Copy `.env.example` to `.env` and adjust the values. The backend reads the follo
 | `DB_PASSWORD` | `nextface` | Database password |
 | `SERVER_PORT` | `8080` | Backend HTTP port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:3000` | Comma-separated allowed origins |
+| `JWT_SECRET` | development-only default | JWT signing key, at least 32 bytes |
+| `JWT_EXPIRATION` | `PT1H` | Access token lifetime (ISO-8601 duration) |
 
 The frontend reads `NEXT_PUBLIC_API_URL` (default `http://localhost:8080`). Copy
 `frontend/.env.example` to `frontend/.env.local` to override it.
@@ -81,6 +83,28 @@ Run the tests:
 cd backend
 ./gradlew test
 ```
+
+## Authentication API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register with email and password, returns a JWT |
+| POST | `/api/auth/login` | Log in with password, returns a JWT |
+| GET | `/api/auth/me` | Current user (requires `Authorization: Bearer <token>`) |
+
+Example:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"user@example.com","password":"password123"}'
+
+curl http://localhost:8080/api/auth/me \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Passwords are stored as BCrypt hashes. Tokens are signed with `JWT_SECRET` and expire after
+`JWT_EXPIRATION`.
 
 ## Running the frontend
 

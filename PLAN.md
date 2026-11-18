@@ -1013,18 +1013,27 @@ Do not mark [x] if:
 
 ## Phase 2 — Backend Authentication
 
-- [ ] Create the User entity.
-- [ ] Create the UserRepository.
-- [ ] Create the Registration DTO.
-- [ ] Create the Login DTO.
-- [ ] Implement registration.
-- [ ] Add BCrypt.
-- [ ] Implement Login.
-- [ ] Implement JWT generation.
-- [ ] Implement JWT validation.
-- [ ] Configure Spring Security.
-- [ ] Implement GET /api/auth/me.
-- [ ] Verify registration and login via the API.
+- [x] Create the User entity.
+- [x] Create the UserRepository.
+- [x] Create the Registration DTO.
+- [x] Create the Login DTO.
+- [x] Implement registration.
+- [x] Add BCrypt.
+- [x] Implement Login.
+- [x] Implement JWT generation.
+- [x] Implement JWT validation.
+- [x] Configure Spring Security.
+- [x] Implement GET /api/auth/me.
+- [x] Verify registration and login via the API.
+
+> Implementation note (2026-11-18): `User` (`users` table, UUID id, unique email, BCrypt hash,
+> timestamps, enabled flag) and `UserRepository` live in `com.nextface.user`; auth DTOs, service,
+> controller, `JwtService` and the JWT filter live in `com.nextface.auth`. Spring Security is
+> stateless: `/api/auth/register`, `/api/auth/login` and `/api/health` are public, other requests
+> need a Bearer token. Tokens are HS256-signed with `JWT_SECRET` and live for `JWT_EXPIRATION`
+> (default 1 hour). Verified with curl: 201 register, 409 duplicate email, 401 wrong password,
+> 401 missing/tampered token, 200 `/api/auth/me`; BCrypt hashes confirmed in PostgreSQL.
+> Tests: `./gradlew test` (15 tests).
 
 **Definition of Done:** a user can register and authenticate via JWT.
 
@@ -1262,15 +1271,15 @@ The project is considered complete when:
 
 The AI Developer must keep this section up to date.
 
-**Current Phase:** Phase 1 — Project Setup
+**Current Phase:** Phase 3 — Face Service
 
-**Last Completed Task:** Phase 1: FastAPI face service initialization (FastAPI 0.164, Uvicorn, health endpoint, pytest)
+**Last Completed Task:** Phase 2: User entity, repository, registration, BCrypt, login, JWT generation/validation, Spring Security, `/api/auth/me`, end-to-end verification
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7).
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed.
 
-**Next Recommended Action:** Phase 2 — Backend Authentication: User entity, registration, login, JWT
+**Next Recommended Action:** Phase 3 — Face Service: integrate OpenCV and MediaPipe, configure face detection
 
 **Last Updated:** 2026-11-18
 
