@@ -1039,12 +1039,12 @@ Do not mark [x] if:
 
 ## Phase 3 — Face Service
 
-- [ ] Create the FastAPI application.
-- [ ] Integrate OpenCV.
-- [ ] Integrate MediaPipe.
-- [ ] Configure Face Detection.
-- [ ] Verify the number of faces in the frame.
-- [ ] Verify image quality.
+- [x] Create the FastAPI application.
+- [x] Integrate OpenCV.
+- [x] Integrate MediaPipe.
+- [x] Configure Face Detection.
+- [x] Verify the number of faces in the frame.
+- [x] Verify image quality.
 - [ ] Choose a face recognition model.
 - [ ] Verify the model license.
 - [ ] Configure ONNX Runtime.
@@ -1053,8 +1053,16 @@ Do not mark [x] if:
 - [ ] Implement Embedding Normalization.
 - [ ] Implement Face Matching.
 - [ ] Implement basic Liveness.
-- [ ] Add error handling.
-- [ ] Test the Face Service API.
+- [~] Add error handling. <sub>stable error codes implemented for `/face/detect`; extended with the remaining endpoints</sub>
+- [~] Test the Face Service API. <sub>`/face/detect` covered by 6 tests; other endpoints not implemented yet</sub>
+
+> Implementation note (2026-11-18): `POST /face/detect` accepts `multipart/form-data` field
+> `image`, decodes it with OpenCV, detects faces with the MediaPipe Face Detector
+> (`models/blaze_face_short_range.tflite`, BlazeFace, Apache 2.0) and returns bounding boxes,
+> confidence and quality metrics. Quality checks: Laplacian blur, brightness range, face size and
+> face count. Errors: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413), `NO_FACE_DETECTED` (422).
+> Thresholds come from `FACE_*` environment variables. Tests: `.venv/bin/python -m pytest`
+> (7 tests).
 
 **Definition of Done:** the Face Service is able to detect a face, create an embedding, and compare two templates.
 
@@ -1273,13 +1281,13 @@ The AI Developer must keep this section up to date.
 
 **Current Phase:** Phase 3 — Face Service
 
-**Last Completed Task:** Phase 2: User entity, repository, registration, BCrypt, login, JWT generation/validation, Spring Security, `/api/auth/me`, end-to-end verification
+**Last Completed Task:** Phase 3: MediaPipe/OpenCV face detection with face-count and image-quality checks, stable error codes, 7 tests
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The face recognition model has not been chosen yet; the match threshold must be validated on test samples.
 
-**Next Recommended Action:** Phase 3 — Face Service: integrate OpenCV and MediaPipe, configure face detection
+**Next Recommended Action:** Phase 3 — Face Service: choose a face recognition model, verify its license, integrate ONNX Runtime and implement embedding generation
 
 **Last Updated:** 2026-11-18
 

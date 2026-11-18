@@ -21,7 +21,7 @@ demo-client/   Demo integration site (planned, Phase 7)
 
 - Backend: Java 21, Spring Boot 3.5, Spring Web, Spring Data JPA, Spring Validation, PostgreSQL
 - Frontend: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 (shadcn/ui planned)
-- Face service: Python 3, FastAPI, Uvicorn (OpenCV / MediaPipe / ONNX Runtime planned)
+- Face service: Python 3, FastAPI, Uvicorn, OpenCV, MediaPipe (ONNX Runtime planned)
 
 ## Requirements
 
@@ -47,6 +47,17 @@ Copy `.env.example` to `.env` and adjust the values. The backend reads the follo
 
 The frontend reads `NEXT_PUBLIC_API_URL` (default `http://localhost:8080`). Copy
 `frontend/.env.example` to `frontend/.env.local` to override it.
+
+The face service reads these optional variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `FACE_DETECTOR_MODEL` | `models/blaze_face_short_range.tflite` | MediaPipe face detector model |
+| `FACE_MIN_DETECTION_CONFIDENCE` | `0.5` | Minimum detection confidence |
+| `FACE_MIN_SIZE_PX` | `80` | Minimum face box size in pixels |
+| `FACE_BLUR_THRESHOLD` | `60` | Minimum Laplacian variance before an image is "blurry" |
+| `FACE_BRIGHTNESS_MIN` / `FACE_BRIGHTNESS_MAX` | `40` / `220` | Accepted mean brightness range |
+| `FACE_MAX_IMAGE_BYTES` | `5242880` | Maximum upload size |
 
 ## Running the backend
 
@@ -160,8 +171,23 @@ cd face-service
 
 If port 8000 is already taken on your machine, pass another port to `--port`.
 
+### Face detection API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/face/detect` | Detect faces, check image quality (`multipart/form-data`, field `image`) |
+
+```bash
+curl -F "image=@photo.jpg;type=image/jpeg" http://localhost:8000/face/detect
+```
+
+The response contains every detected face (box and confidence) and a quality report: blur score,
+brightness, face count and a list of issues (`BLURRY`, `TOO_DARK`, `TOO_BRIGHT`, `MULTIPLE_FACES`,
+`FACE_TOO_SMALL`). Errors use stable codes: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413),
+`NO_FACE_DETECTED` (422).
+
 ## Status
 
-The project is at Phase 1 (Project Setup): all three applications start, and the frontend
-exchanges requests with the backend. See the roadmap in [PLAN.md](PLAN.md) for the current
+The project is at Phase 3 (Face Service): detection and image-quality checks are implemented; the
+embedding model and matching are next. See the roadmap in [PLAN.md](PLAN.md) for the current
 checklist and next tasks.
