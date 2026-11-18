@@ -25,6 +25,10 @@ nextface:
     # Development default only; override JWT_SECRET outside local development.
     secret: ${JWT_SECRET:nextface-development-only-secret-key-change-me}
     expiration: ${JWT_EXPIRATION:PT1H}
+  face-service:
+    base-url: ${FACE_SERVICE_URL:http://localhost:8000}
+    connect-timeout: ${FACE_SERVICE_CONNECT_TIMEOUT:PT3S}
+    read-timeout: ${FACE_SERVICE_READ_TIMEOUT:PT10S}
 
 logging:
   level:

@@ -1083,17 +1083,28 @@ Do not mark [x] if:
 
 ## Phase 4 — Face Enrollment
 
-- [ ] Create the FaceProfile entity.
-- [ ] Create the FaceProfileRepository.
-- [ ] Implement POST /api/face/enroll.
-- [ ] Validate the user's JWT.
-- [ ] Receive the image from the frontend.
-- [ ] Pass the image to the Face Service.
-- [ ] Obtain the embedding.
-- [ ] Save the embedding in PostgreSQL.
-- [ ] Implement Face Profile update.
-- [ ] Implement Face Profile deletion.
-- [ ] Verify the full face enrollment scenario.
+- [x] Create the FaceProfile entity.
+- [x] Create the FaceProfileRepository.
+- [x] Implement POST /api/face/enroll.
+- [x] Validate the user's JWT.
+- [x] Receive the image from the frontend.
+- [x] Pass the image to the Face Service.
+- [x] Obtain the embedding.
+- [x] Save the embedding in PostgreSQL.
+- [x] Implement Face Profile update.
+- [x] Implement Face Profile deletion.
+- [x] Verify the full face enrollment scenario.
+
+> Implementation note (2026-11-18): `FaceProfile` (`face_profiles`) keeps a unique `user_id`, a
+> `real[]` embedding of 128 values and timestamps. `POST /api/face/enroll` requires a JWT, proxies
+> the image to `POST /face/embedding`, rejects low-quality frames and stores the embedding.
+> Re-enrollment requires an explicit `?overwrite=true`; otherwise the endpoint returns 409
+> (`FACE_PROFILE_EXISTS`). `GET /api/face/profile` reports enrollment status and
+> `DELETE /api/face/profile` removes the profile. The backend calls the face service through
+> `FACE_SERVICE_URL` (default `http://localhost:8000`); quality rejections surface as
+> `FACE_QUALITY_REJECTED`. Verified end to end against PostgreSQL and the live face service:
+> enroll 200, duplicate 409, overwrite 200, invalid image 422, delete 204, delete again 404,
+> unauthenticated 401; the stored array has 128 elements. Backend tests: 26 passed.
 
 **Definition of Done:** a registered user can link their face to the account.
 
@@ -1294,15 +1305,15 @@ The project is considered complete when:
 
 The AI Developer must keep this section up to date.
 
-**Current Phase:** Phase 4 — Face Enrollment
+**Current Phase:** Phase 5 — Face Authentication
 
-**Last Completed Task:** Phase 3: basic liveness — MediaPipe Face Landmarker, head-turn and blink challenges, 22 tests
+**Last Completed Task:** Phase 4: face enrollment — FaceProfile entity, face-service client, enroll/status/delete endpoints, overwrite confirmation, 26 backend tests
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings. Face profile replacement uses `POST /api/face/enroll?overwrite=true` rather than a separate PUT endpoint; `GET /api/face/profile` was added for enrollment status and is not listed in the section 11 API table.
 
-**Next Recommended Action:** Phase 4 — Face Enrollment: backend-to-face-service client, enrollment endpoints and biometric profile storage
+**Next Recommended Action:** Phase 5 — Face Authentication: enrollment embedding comparison, attempt limiting, JWT issuance and audit logging
 
 **Last Updated:** 2026-11-18
 

@@ -44,6 +44,9 @@ Copy `.env.example` to `.env` and adjust the values. The backend reads the follo
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:3000` | Comma-separated allowed origins |
 | `JWT_SECRET` | development-only default | JWT signing key, at least 32 bytes |
 | `JWT_EXPIRATION` | `PT1H` | Access token lifetime (ISO-8601 duration) |
+| `FACE_SERVICE_URL` | `http://localhost:8000` | Internal face service base URL |
+| `FACE_SERVICE_CONNECT_TIMEOUT` | `PT3S` | Face service connect timeout |
+| `FACE_SERVICE_READ_TIMEOUT` | `PT10S` | Face service read timeout |
 
 The frontend reads `NEXT_PUBLIC_API_URL` (default `http://localhost:8080`). Copy
 `frontend/.env.example` to `frontend/.env.local` to override it.
@@ -53,11 +56,17 @@ The face service reads these optional variables:
 | Variable | Default | Description |
 |---|---|---|
 | `FACE_DETECTOR_MODEL` | `models/blaze_face_short_range.tflite` | MediaPipe face detector model |
+| `FACE_RECOGNITION_MODEL` | `models/face_recognition_sface_2021dec.onnx` | SFace embedding model |
+| `FACE_LANDMARKER_MODEL` | `models/face_landmarker.task` | MediaPipe Face Landmarker model |
+| `FACE_MATCH_THRESHOLD` | `0.363` | Cosine similarity threshold for a match |
 | `FACE_MIN_DETECTION_CONFIDENCE` | `0.5` | Minimum detection confidence |
 | `FACE_MIN_SIZE_PX` | `80` | Minimum face box size in pixels |
 | `FACE_BLUR_THRESHOLD` | `60` | Minimum Laplacian variance before an image is "blurry" |
 | `FACE_BRIGHTNESS_MIN` / `FACE_BRIGHTNESS_MAX` | `40` / `220` | Accepted mean brightness range |
 | `FACE_MAX_IMAGE_BYTES` | `5242880` | Maximum upload size |
+| `FACE_LIVENESS_TURN_THRESHOLD` | `0.08` | Minimum normalized head turn |
+| `FACE_LIVENESS_BLINK_THRESHOLD` | `0.19` | Maximum eye aspect ratio that counts as a blink |
+| `FACE_LIVENESS_MIN_FRAMES` / `FACE_LIVENESS_MAX_FRAMES` | `3` / `20` | Accepted frame count for a liveness check |
 
 ## Running the backend
 
@@ -116,6 +125,33 @@ curl http://localhost:8080/api/auth/me \
 
 Passwords are stored as BCrypt hashes. Tokens are signed with `JWT_SECRET` and expire after
 `JWT_EXPIRATION`.
+
+## Face enrollment
+
+Enrollment requires a JWT. The backend forwards the image to the face service, receives a
+128-dimensional SFace embedding and stores it in PostgreSQL, one profile per user.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/face/enroll` | Enroll the face (`multipart/form-data`, field `image`) |
+| POST | `/api/face/enroll?overwrite=true` | Replace an existing profile (explicit confirmation) |
+| GET | `/api/face/profile` | Enrollment status (`enrolled`, `updatedAt`) |
+| DELETE | `/api/face/profile` | Delete the face profile |
+
+```bash
+curl -X POST http://localhost:8080/api/face/enroll \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "image=@photo.jpg;type=image/jpeg"
+
+curl http://localhost:8080/api/face/profile -H "Authorization: Bearer $TOKEN"
+# {"enrolled":true,"updatedAt":"2026-11-18T10:00:00Z"}
+
+curl -X DELETE http://localhost:8080/api/face/profile -H "Authorization: Bearer $TOKEN"
+```
+
+Errors: `FACE_IMAGE_REQUIRED` (400), `FACE_PROFILE_EXISTS` (409), `FACE_PROFILE_NOT_FOUND` (404),
+`FACE_QUALITY_REJECTED` / `FACE_IMAGE_REJECTED` (422), `FACE_SERVICE_UNAVAILABLE` (503),
+`IMAGE_TOO_LARGE` (413).
 
 ## Running the frontend
 
