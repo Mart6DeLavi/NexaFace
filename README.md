@@ -21,7 +21,7 @@ demo-client/   Demo integration site (planned, Phase 7)
 
 - Backend: Java 21, Spring Boot 3.5, Spring Web, Spring Data JPA, Spring Validation, PostgreSQL
 - Frontend: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 (shadcn/ui planned)
-- Face service: Python 3, FastAPI, Uvicorn, OpenCV, MediaPipe (ONNX Runtime planned)
+- Face service: Python 3, FastAPI, Uvicorn, OpenCV, MediaPipe, ONNX Runtime
 
 ## Requirements
 
@@ -171,20 +171,35 @@ cd face-service
 
 If port 8000 is already taken on your machine, pass another port to `--port`.
 
-### Face detection API
+### Face analysis API
 
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/face/detect` | Detect faces, check image quality (`multipart/form-data`, field `image`) |
+| POST | `/face/embedding` | Generate a 128-d embedding for the single face (`multipart/form-data`, field `image`) |
+| POST | `/face/compare` | Compare two embeddings with cosine similarity (JSON) |
 
 ```bash
 curl -F "image=@photo.jpg;type=image/jpeg" http://localhost:8000/face/detect
+curl -F "image=@photo.jpg;type=image/jpeg" http://localhost:8000/face/embedding
+curl -X POST http://localhost:8000/face/compare \
+  -H "Content-Type: application/json" \
+  -d '{"embedding1": [...], "embedding2": [...]}'
 ```
 
-The response contains every detected face (box and confidence) and a quality report: blur score,
-brightness, face count and a list of issues (`BLURRY`, `TOO_DARK`, `TOO_BRIGHT`, `MULTIPLE_FACES`,
-`FACE_TOO_SMALL`). Errors use stable codes: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413),
-`NO_FACE_DETECTED` (422).
+Detection responses contain every detected face (box and confidence) and a quality report: blur
+score, brightness, face count and a list of issues (`BLURRY`, `TOO_DARK`, `TOO_BRIGHT`,
+`MULTIPLE_FACES`, `FACE_TOO_SMALL`).
+
+Embeddings are L2-normalized. `/face/embedding` requires exactly one face (`MULTIPLE_FACES`
+otherwise). `/face/compare` returns `similarity`, `match` and the configured `threshold`
+(`FACE_MATCH_THRESHOLD`, default `0.363`).
+
+Errors use stable codes: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413), `NO_FACE_DETECTED`
+(422), `MULTIPLE_FACES` (422), `INVALID_EMBEDDING` (400), `EMBEDDING_DIMENSION_MISMATCH` (400).
+
+Recognition uses SFace (`models/face_recognition_sface_2021dec.onnx`, Apache 2.0) via ONNX
+Runtime, with alignment based on the MediaPipe keypoints.
 
 ## Status
 

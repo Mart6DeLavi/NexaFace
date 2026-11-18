@@ -1,6 +1,7 @@
 """Face detection powered by MediaPipe Face Detector (Tasks API)."""
 
 import threading
+from dataclasses import dataclass
 from functools import lru_cache
 
 import cv2
@@ -11,6 +12,18 @@ from mediapipe.tasks.python import vision
 
 from app.config import settings
 from app.schemas.detection import BoundingBox, DetectedFace
+
+
+@dataclass(frozen=True)
+class FaceDetection:
+    """A detected face together with its keypoints in pixel coordinates.
+
+    Keypoints follow the MediaPipe order: right eye, left eye, nose tip,
+    mouth center, right ear tragion, left ear tragion.
+    """
+
+    face: DetectedFace
+    landmarks: np.ndarray
 
 
 class FaceDetector:
@@ -31,6 +44,9 @@ class FaceDetector:
         self._lock = threading.Lock()
 
     def detect(self, image_bgr: np.ndarray) -> list[DetectedFace]:
+        return [detection.face for detection in self.detect_with_landmarks(image_bgr)]
+
+    def detect_with_landmarks(self, image_bgr: np.ndarray) -> list[FaceDetection]:
         height, width = image_bgr.shape[:2]
         rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
@@ -38,23 +54,26 @@ class FaceDetector:
         with self._lock:
             result = self._detector.detect(mp_image)
 
-        faces: list[DetectedFace] = []
+        detections: list[FaceDetection] = []
         for detection in result.detections:
             box = detection.bounding_box
             x = max(0, box.origin_x)
             y = max(0, box.origin_y)
-            faces.append(
-                DetectedFace(
-                    box=BoundingBox(
-                        x=x,
-                        y=y,
-                        width=min(box.width, width - x),
-                        height=min(box.height, height - y),
-                    ),
-                    confidence=round(float(detection.categories[0].score), 4),
-                )
+            face = DetectedFace(
+                box=BoundingBox(
+                    x=x,
+                    y=y,
+                    width=min(box.width, width - x),
+                    height=min(box.height, height - y),
+                ),
+                confidence=round(float(detection.categories[0].score), 4),
             )
-        return faces
+            landmarks = np.array(
+                [[point.x * width, point.y * height] for point in detection.keypoints],
+                dtype=np.float32,
+            )
+            detections.append(FaceDetection(face=face, landmarks=landmarks))
+        return detections
 
 
 @lru_cache(maxsize=1)

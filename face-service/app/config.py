@@ -24,6 +24,8 @@ def _env_int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     detector_model_path: Path
+    recognition_model_path: Path
+    match_threshold: float
     min_detection_confidence: float
     min_face_size_px: int
     blur_threshold: float
@@ -39,8 +41,16 @@ class Settings:
                 str(SERVICE_ROOT / "models" / "blaze_face_short_range.tflite"),
             )
         )
+        recognition_model_path = Path(
+            os.getenv(
+                "FACE_RECOGNITION_MODEL",
+                str(SERVICE_ROOT / "models" / "face_recognition_sface_2021dec.onnx"),
+            )
+        )
         return cls(
             detector_model_path=model_path,
+            recognition_model_path=recognition_model_path,
+            match_threshold=_env_float("FACE_MATCH_THRESHOLD", 0.363),
             min_detection_confidence=_env_float("FACE_MIN_DETECTION_CONFIDENCE", 0.5),
             min_face_size_px=_env_int("FACE_MIN_SIZE_PX", 80),
             blur_threshold=_env_float("FACE_BLUR_THRESHOLD", 60.0),

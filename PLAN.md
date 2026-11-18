@@ -1045,24 +1045,31 @@ Do not mark [x] if:
 - [x] Configure Face Detection.
 - [x] Verify the number of faces in the frame.
 - [x] Verify image quality.
-- [ ] Choose a face recognition model.
-- [ ] Verify the model license.
-- [ ] Configure ONNX Runtime.
-- [ ] Implement Face Alignment.
-- [ ] Implement Embedding Generation.
-- [ ] Implement Embedding Normalization.
-- [ ] Implement Face Matching.
+- [x] Choose a face recognition model. <sub>SFace (MobileFaceNet) from OpenCV Zoo</sub>
+- [x] Verify the model license. <sub>Apache 2.0</sub>
+- [x] Configure ONNX Runtime.
+- [x] Implement Face Alignment. <sub>similarity transform from eye/nose/mouth keypoints</sub>
+- [x] Implement Embedding Generation. <sub>`POST /face/embedding`, 128-dimensional vector</sub>
+- [x] Implement Embedding Normalization. <sub>L2-normalized in the service</sub>
+- [x] Implement Face Matching. <sub>`POST /face/compare`, cosine similarity, threshold 0.363</sub>
 - [ ] Implement basic Liveness.
-- [~] Add error handling. <sub>stable error codes implemented for `/face/detect`; extended with the remaining endpoints</sub>
-- [~] Test the Face Service API. <sub>`/face/detect` covered by 6 tests; other endpoints not implemented yet</sub>
+- [~] Add error handling. <sub>stable error codes implemented for all face endpoints; liveness remains</sub>
+- [~] Test the Face Service API. <sub>14 tests cover detect, embedding and compare; liveness remains</sub>
 
 > Implementation note (2026-11-18): `POST /face/detect` accepts `multipart/form-data` field
 > `image`, decodes it with OpenCV, detects faces with the MediaPipe Face Detector
 > (`models/blaze_face_short_range.tflite`, BlazeFace, Apache 2.0) and returns bounding boxes,
 > confidence and quality metrics. Quality checks: Laplacian blur, brightness range, face size and
 > face count. Errors: `INVALID_IMAGE` (400), `IMAGE_TOO_LARGE` (413), `NO_FACE_DETECTED` (422).
-> Thresholds come from `FACE_*` environment variables. Tests: `.venv/bin/python -m pytest`
-> (7 tests).
+> Thresholds come from `FACE_*` environment variables. Tests: `.venv/bin/python -m pytest`.
+>
+> Recognition uses SFace (`models/face_recognition_sface_2021dec.onnx`, Apache 2.0) via ONNX
+> Runtime. Faces are aligned with a similarity transform built from MediaPipe keypoints and
+> cropped to 112x112. `POST /face/embedding` returns a 128-dimensional L2-normalized embedding
+> (`MULTIPLE_FACES` if more than one face). `POST /face/compare` takes two embeddings and returns
+> cosine similarity plus a match decision against `FACE_MATCH_THRESHOLD` (default 0.363).
+> Verified live: same face similarity 1.0, different faces 0.1316. The model expects raw 0-255
+> RGB pixels (no scaling), matching OpenCV's `FaceRecognizerSF` behaviour.
 
 **Definition of Done:** the Face Service is able to detect a face, create an embedding, and compare two templates.
 
@@ -1281,13 +1288,13 @@ The AI Developer must keep this section up to date.
 
 **Current Phase:** Phase 3 — Face Service
 
-**Last Completed Task:** Phase 3: MediaPipe/OpenCV face detection with face-count and image-quality checks, stable error codes, 7 tests
+**Last Completed Task:** Phase 3: SFace recognition via ONNX Runtime — alignment, 128-d normalized embeddings, cosine matching, license verified (Apache 2.0), 14 tests
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The face recognition model has not been chosen yet; the match threshold must be validated on test samples.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. Liveness detection is not implemented yet. The match threshold (0.363) was validated only on two test portraits and needs a larger sample.
 
-**Next Recommended Action:** Phase 3 — Face Service: choose a face recognition model, verify its license, integrate ONNX Runtime and implement embedding generation
+**Next Recommended Action:** Phase 3 — Face Service: implement basic liveness detection, then proceed to Phase 4
 
 **Last Updated:** 2026-11-18
 

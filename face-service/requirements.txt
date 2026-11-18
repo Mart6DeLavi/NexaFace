@@ -3,4 +3,5 @@ uvicorn[standard]==0.54.0
 opencv-python-headless==5.1.0
 mediapipe==1.2.3
 numpy==2.5.5
+onnxruntime==1.32.0
 python-multipart==0.0.34
