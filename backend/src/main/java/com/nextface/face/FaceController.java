@@ -14,19 +14,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nextface.auth.AuthResponse;
 import com.nextface.auth.AuthenticatedUser;
 
 /**
- * Face enrollment endpoints. All of them require a valid JWT.
+ * Face enrollment and face login endpoints. Enrollment endpoints require a valid
+ * JWT; the login endpoint is public.
  */
 @RestController
 @RequestMapping("/api/face")
 public class FaceController {
 
     private final FaceEnrollmentService enrollmentService;
+    private final FaceAuthenticationService authenticationService;
 
-    public FaceController(FaceEnrollmentService enrollmentService) {
+    public FaceController(
+            FaceEnrollmentService enrollmentService,
+            FaceAuthenticationService authenticationService) {
         this.enrollmentService = enrollmentService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping(value = "/enroll", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,5 +53,12 @@ public class FaceController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AuthenticatedUser user) {
         enrollmentService.delete(user.id());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/login", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public AuthResponse login(
+            @RequestParam("email") String email,
+            @RequestPart("image") MultipartFile image) {
+        return authenticationService.login(email, image);
     }
 }

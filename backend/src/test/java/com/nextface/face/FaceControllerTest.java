@@ -29,8 +29,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nextface.auth.AuthResponse;
 import com.nextface.auth.AuthenticatedUser;
 import com.nextface.auth.JwtService;
+import com.nextface.user.UserResponse;
 
 @WebMvcTest(controllers = FaceController.class,
         properties = "nextface.cors.allowed-origins=http://localhost:3000")
@@ -42,6 +44,9 @@ class FaceControllerTest {
 
     @MockitoBean
     private FaceEnrollmentService enrollmentService;
+
+    @MockitoBean
+    private FaceAuthenticationService authenticationService;
 
     @MockitoBean
     private JwtService jwtService;
@@ -115,5 +120,30 @@ class FaceControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(enrollmentService).delete(user.id());
+    }
+
+    @Test
+    void loginReturnsJwt() throws Exception {
+        when(authenticationService.login(eq(user.email()), any(MultipartFile.class)))
+                .thenReturn(AuthResponse.bearer(
+                        "token", 3600, new UserResponse(user.id(), user.email(), Instant.now())));
+
+        MockMultipartFile image = new MockMultipartFile(
+                "image", "face.jpg", "image/jpeg", new byte[] {1, 2, 3});
+
+        mockMvc.perform(multipart("/api/face/login")
+                        .file(image)
+                        .param("email", user.email()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("token"))
+                .andExpect(jsonPath("$.tokenType").value("Bearer"))
+                .andExpect(jsonPath("$.user.email").value(user.email()));
+    }
+
+    @Test
+    void loginRejectsMissingImagePart() throws Exception {
+        mockMvc.perform(multipart("/api/face/login").param("email", user.email()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("FACE_IMAGE_REQUIRED"));
     }
 }

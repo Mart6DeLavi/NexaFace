@@ -1110,18 +1110,35 @@ Do not mark [x] if:
 
 ## Phase 5 — Face Authentication
 
-- [ ] Implement POST /api/face/login.
-- [ ] Receive the face image.
-- [ ] Generate the embedding.
-- [ ] Retrieve the stored Face Profile.
-- [ ] Perform Face Matching.
-- [ ] Configure the threshold.
-- [ ] Handle the absence of a match.
-- [ ] Handle the absence of a Face Profile.
-- [ ] Implement attempt limiting.
-- [ ] Generate a JWT on successful recognition.
-- [ ] Record the result in audit_logs.
-- [ ] Verify successful and unsuccessful authorization.
+- [x] Implement POST /api/face/login.
+- [x] Receive the face image.
+- [x] Generate the embedding.
+- [x] Retrieve the stored Face Profile.
+- [x] Perform Face Matching.
+- [x] Configure the threshold.
+- [x] Handle the absence of a match.
+- [x] Handle the absence of a Face Profile.
+- [x] Implement attempt limiting.
+- [x] Generate a JWT on successful recognition.
+- [x] Record the result in audit_logs.
+- [x] Verify successful and unsuccessful authorization.
+
+> Implementation note (2026-11-18): face login is **1:1 verification** — the request carries the
+> account `email` plus the image, because the user must be identified before the stored profile can
+> be loaded. `FaceAuthenticationService` normalizes the email, checks the attempt limit, loads the
+> user and the `FaceProfile`, requests a fresh embedding from the face service and computes cosine
+> similarity locally against `nextface.face.match-threshold` (`FACE_MATCH_THRESHOLD`, default 0.363).
+> On a match it issues the same JWT as password login (`JwtService`, `AuthResponse`).
+> Failures: unknown/disabled user or similarity below threshold → `401 FACE_AUTH_FAILED`;
+> missing profile → `404 FACE_PROFILE_NOT_FOUND`; quality rejection → `422` without counting an
+> attempt; exhausted attempts → `429 TOO_MANY_ATTEMPTS`. `LoginAttemptService` keeps failed counts
+> in memory per normalized email (`FACE_LOGIN_MAX_ATTEMPTS=5`, `FACE_LOGIN_ATTEMPT_WINDOW=PT15M`),
+> clears them on success and expires them with the window. `AuditService` writes `FACE_LOGIN`
+> rows in a `REQUIRES_NEW` transaction so failed attempts survive the login rollback; `user_id`
+> is null when the email is unknown. `audit_logs` stores no biometrics or tokens.
+> Verified live against PostgreSQL and the face service: same face 200 + working JWT,
+> different face 401, unknown email 401, account without profile 404, five failures then
+> `429`, and audit rows with correct success flags and user ids. `./gradlew test` — 44 passed.
 
 **Definition of Done:** a user can log in to NextFace via face recognition.
 
@@ -1305,15 +1322,15 @@ The project is considered complete when:
 
 The AI Developer must keep this section up to date.
 
-**Current Phase:** Phase 5 — Face Authentication
+**Current Phase:** Phase 6 — Frontend
 
-**Last Completed Task:** Phase 4: face enrollment — FaceProfile entity, face-service client, enroll/status/delete endpoints, overwrite confirmation, 26 backend tests
+**Last Completed Task:** Phase 5: face authentication — 1:1 verification by email + image, cosine matching with configurable threshold, per-email attempt limiting, JWT issuance, audit logging, 44 backend tests
 
 **Current Task:** None
 
-**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings. Face profile replacement uses `POST /api/face/enroll?overwrite=true` rather than a separate PUT endpoint; `GET /api/face/profile` was added for enrollment status and is not listed in the section 11 API table.
+**Known Issues:** The plan file is named `PLAN.md`, while section 16 refers to `PROJECT_PLAN.md`; `PLAN.md` is treated as the single source of truth. Port 8000 was occupied by an unrelated local Docker container during verification, so the face service was checked on port 8010; 8000 remains the documented default. SDK and demo-client are not created yet (Phase 7). `/api/auth/logout` is listed in the API table but is not part of the Phase 2 checklist; JWT logout is client-side until a token revocation list is needed. The match threshold (0.363) was validated only on two test portraits and needs a larger sample. Liveness is a landmark-movement demo; positive blink detection is covered by unit tests only, and head-turn thresholds were validated on perspective-warped frames rather than real recordings. Face profile replacement uses `POST /api/face/enroll?overwrite=true` rather than a separate PUT endpoint; `GET /api/face/profile` was added for enrollment status and is not listed in the section 11 API table. Face login requires the account email in addition to the image (1:1 verification, not 1:N identification); failed attempt counters are in-memory and per instance, so they reset on restart and are not shared between backend replicas; `audit_logs` maps `user_id`/`application_id` as plain UUID columns without database FK constraints.
 
-**Next Recommended Action:** Phase 5 — Face Authentication: enrollment embedding comparison, attempt limiting, JWT issuance and audit logging
+**Next Recommended Action:** Phase 6 — Frontend: landing page, authentication pages, face login UI and profile management
 
 **Last Updated:** 2026-11-18
 

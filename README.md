@@ -47,6 +47,9 @@ Copy `.env.example` to `.env` and adjust the values. The backend reads the follo
 | `FACE_SERVICE_URL` | `http://localhost:8000` | Internal face service base URL |
 | `FACE_SERVICE_CONNECT_TIMEOUT` | `PT3S` | Face service connect timeout |
 | `FACE_SERVICE_READ_TIMEOUT` | `PT10S` | Face service read timeout |
+| `FACE_MATCH_THRESHOLD` | `0.363` | Cosine similarity threshold for a face login match |
+| `FACE_LOGIN_MAX_ATTEMPTS` | `5` | Failed face login attempts allowed per email and window |
+| `FACE_LOGIN_ATTEMPT_WINDOW` | `PT15M` | Failed attempt window (ISO-8601 duration) |
 
 The frontend reads `NEXT_PUBLIC_API_URL` (default `http://localhost:8080`). Copy
 `frontend/.env.example` to `frontend/.env.local` to override it.
@@ -152,6 +155,32 @@ curl -X DELETE http://localhost:8080/api/face/profile -H "Authorization: Bearer 
 Errors: `FACE_IMAGE_REQUIRED` (400), `FACE_PROFILE_EXISTS` (409), `FACE_PROFILE_NOT_FOUND` (404),
 `FACE_QUALITY_REJECTED` / `FACE_IMAGE_REJECTED` (422), `FACE_SERVICE_UNAVAILABLE` (503),
 `IMAGE_TOO_LARGE` (413).
+
+## Face login
+
+Face login is 1:1 verification: the client sends the account email and a captured image, the
+backend generates an SFace embedding and compares it with the stored profile using cosine
+similarity. A JWT is issued only when the similarity reaches `FACE_MATCH_THRESHOLD`.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/face/login` | `multipart/form-data` with fields `email` and `image` |
+
+```bash
+curl -X POST http://localhost:8080/api/face/login \
+  -F "email=user@example.com" \
+  -F "image=@photo.jpg;type=image/jpeg"
+```
+
+The response has the same shape as password login (`accessToken`, `tokenType`, `expiresIn`, `user`).
+
+Errors: `FACE_AUTH_FAILED` (401, unknown email, disabled account or no match),
+`FACE_PROFILE_NOT_FOUND` (404, the account has no enrolled face), `FACE_QUALITY_REJECTED` /
+`FACE_IMAGE_REJECTED` (422), `TOO_MANY_ATTEMPTS` (429), `FACE_SERVICE_UNAVAILABLE` (503).
+
+Failed attempts are counted per email in memory: after `FACE_LOGIN_MAX_ATTEMPTS` failures within
+`FACE_LOGIN_ATTEMPT_WINDOW` the endpoint returns `429`; a successful login clears the counter.
+Every attempt is recorded in `audit_logs` (`FACE_LOGIN`, success flag, user id when known).
 
 ## Running the frontend
 

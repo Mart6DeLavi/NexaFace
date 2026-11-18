@@ -14,12 +14,14 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 
 import com.nextface.auth.EmailAlreadyUsedException;
 import com.nextface.auth.InvalidCredentialsException;
+import com.nextface.face.FaceAuthenticationFailedException;
 import com.nextface.face.FaceImageRequiredException;
 import com.nextface.face.FaceProfileAlreadyExistsException;
 import com.nextface.face.FaceProfileNotFoundException;
 import com.nextface.face.FaceQualityRejectedException;
 import com.nextface.face.FaceServiceRejectedException;
 import com.nextface.face.FaceServiceUnavailableException;
+import com.nextface.face.TooManyLoginAttemptsException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -56,6 +58,18 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiError> handleFaceProfileExists(FaceProfileAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiError("FACE_PROFILE_EXISTS", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FaceAuthenticationFailedException.class)
+    public ResponseEntity<ApiError> handleFaceAuthenticationFailed(FaceAuthenticationFailedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiError("FACE_AUTH_FAILED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(TooManyLoginAttemptsException.class)
+    public ResponseEntity<ApiError> handleTooManyLoginAttempts(TooManyLoginAttemptsException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new ApiError("TOO_MANY_ATTEMPTS", ex.getMessage()));
     }
 
     @ExceptionHandler(FaceProfileNotFoundException.class)
